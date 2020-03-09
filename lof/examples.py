@@ -18,11 +18,12 @@ def pred_ntf_oil(code, **kws):
     if cprice / dprice > higher or cprice / dprice < lower:
         notify(
             r["name"],
-            "溢价率已达到 %s%%。T-1 日净值预估 %s, T 日净值实时预估 %s"
+            "溢价率已达到 %s%%。T-1 日净值预估 %s, T 日净值实时预估 %s，实时价格 %s。"
             % (
                 round((cprice / dprice - 1) * 100, 1),
                 round(ddprice, 3),
                 round(dprice, 3),
+                round(cprice, 3),
             ),
             token=kws.get("token"),
             _type=_type,

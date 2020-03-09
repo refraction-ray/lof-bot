@@ -87,6 +87,17 @@ infos = {
     "9236": Info(
         "iShares Silver Trust (SLV)", "etfs/ishares-silver-trust", "USD"
     ),
+    "1122426": Info(
+        "S&P GSCI Crude Oil Index Excess Return (SPGSCLP)",
+        "indices/s-p-gsci-crude-oil-er-historical-data",
+        "USD",
+    ),  # no valid realtime data
+    "953362": Info("Simplex WTI (1671)", "etfs/simplex-wti", "100JPY"),
+    "953293": Info(
+        "NEXT FUNDS Nomura Crude Oil Long (1699)",
+        "etfs/next-funds-nomura-crude-oil-long",
+        "100JPY",
+    ),
 }
 
 
@@ -139,9 +150,44 @@ holdings_160216_19s4 = {
 # 华宝油气直接按持仓跟踪指数模拟，实际其直接持仓成分股
 holdings_162411_19s4 = {"1010825": 91}
 
+# 华安标普全球石油指数
+# reference: http://pdf.dfcfw.com/pdf/H2_AN202001201374395365_1.pdf
+holdings_160416_19s4 = {}
+# couldn't find the benchmark index as investing.com: S&P Global Oil Index Net Total Return
+
+# 易方达原油
+# reference http://pdf.dfcfw.com/pdf/H2_AN202001171374296729_1.pdf
+holdings_161129_19s4 = {
+    "38335": 18.96,
+    "44794": 18.81,
+    "44634": 18.63,
+    "44792": 18.39,
+    "953362": 10.26,
+    "44793": 4.18,
+    "953293": 3.6,
+    "37450": 1.64,
+}
+holdings_161129_bc_cash = {"1122426": 90.92}
+
+# 嘉实原油
+# reference: http://pdf.dfcfw.com/pdf/H2_AN202001201374377449_1.pdf
+# 一个跟踪基准100% WTI 的基金为何买了这么多跟踪 brent 的基金。。。
+holdings_160723_19s4 = {
+    "38324": 18.96,
+    "44792": 16.65,
+    "37450": 14.87,
+    "44793": 14.48,
+    "44634": 13.79,
+    "38335": 13.32,
+    "44794": 6.47,
+}
+holdings_160723_bc_cash = {"8849": 93.55}
+
 holdings["501018"] = holdings_501018_19s4
 holdings["160216"] = holdings_160216_19s4
 holdings["162411"] = holdings_162411_19s4
+holdings["161129"] = holdings_161129_19s4
+holdings["160723"] = holdings_160723_19s4
 
 holdings["oil_rt"] = {
     "commodities/brent-oil": 40 * 0.9,

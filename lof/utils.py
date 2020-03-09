@@ -11,11 +11,10 @@ def is_cn_trading(dtobj=None):
     ].iloc[0]["is_open"]
     if ison == 0:
         return False
-    else:  # 交易日
+    else:  # 交易日 # 9:00-9:30 也包括，用于盘前获取信息
         if (
             dtobj.hour < 9
             or dtobj.hour >= 15
-            or (dtobj.hour == 9 and dtobj.minute < 30)
             or (dtobj.hour == 12)
             or (dtobj.hour == 11 and dtobj.minute > 30)
         ):
