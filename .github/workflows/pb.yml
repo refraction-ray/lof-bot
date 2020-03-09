@@ -1,5 +1,8 @@
 name: pb
-on: [push]
+on:
+  push:
+  schedule:
+    - cron:  '*/30 * * * *'
 jobs:
   tests:
     runs-on: ubuntu-18.04
