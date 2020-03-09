@@ -1,0 +1,15 @@
+dev*
+*ipynb*
+coverage.xml
+_*
+.coverage
+*.backup
+.pytest_cache
+subway/templates
+*.pyc
+.idea
+.DS_Store
+build
+dist
+*.egg-info
+__pycache__
