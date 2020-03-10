@@ -47,9 +47,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
             # 实时净值
             if now.hour > 8:
                 try:
-                    _, ntext = get_qdii_t(
-                        code, est_holdings, rt_holdings
-                    )
+                    _, ntext = get_qdii_t(code, est_holdings, rt_holdings)
                     ntext = str(round(ntext, 3))
                     ntext += f" ({now.strftime('%H:%M')})"
                     ntext = (
@@ -77,7 +75,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
             else:
                 ntext = str(line["close"])
         elif v == "new":
-            ntext = f"""
+            ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-new--><!--end-->
 <tr>
 <td style='text-align:center;' >{dtobj.strftime("%Y-%m-%d")}</td>
 <td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(hours=1)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value1-->&nbsp;<!--end--></td>
@@ -86,7 +84,6 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
     )};{dtobj.strftime("%Y-%m-%d")}-value2-->&nbsp;<!--end--></td>
 <td style='text-align:center;' ><!--update:{next_onday(next_onday(dtobj)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
 </tr>
-<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-new--><!--end-->
             """
 
     else:
