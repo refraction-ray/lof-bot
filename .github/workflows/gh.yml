@@ -1,4 +1,4 @@
-name: pb
+name: gh
 on:
   push:
     branches:
