@@ -3,12 +3,17 @@ import xalpha as xa
 from .predict import get_qdii_t
 from .holdings import holdings
 from .notification import notify
+from .exceptions import NonAccurate
 
 
 def pred_ntf_oil(code, **kws):
     daily_holdings = kws.get("daily_holdings", holdings[code[2:]])
     rt_holdings = kws.get("rt_holdings", holdings["oil_rt"])
-    ddprice, dprice = get_qdii_t(code, daily_holdings, rt_holdings)
+    try:
+        ddprice, dprice = get_qdii_t(code, daily_holdings, rt_holdings)
+    except NonAccurate as e:
+        print(e.reason)
+        return
     print(code, dprice, ddprice)
     r = xa.get_rt(code)
     cprice = r["current"]

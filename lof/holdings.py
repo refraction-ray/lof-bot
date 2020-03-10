@@ -63,7 +63,8 @@ infos = {
         "S&P Oil & Gas Exploration & Production Select Industry TR (SPSIOPTR)",
         "indices/s-p-oil-gas-exploration-product-tr",
         "USD",
-    ),  # no valid realtime data
+    ),
+    # no valid realtime data and historical data update is not immediate. 9.00am BJ time is not enough to check yesterday value
     "14218": Info(
         "ProShares Ultra Bloomberg Crude Oil (UCO)",
         "etfs/proshares-ultra-dj-ubs-crude-oil",
