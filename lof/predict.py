@@ -98,7 +98,7 @@ def estimate_table(start, end, *cols):
 
 def get_newest_netvalue(code):
     code = code[1:]
-    r = xa.univeral.rget(f"http://fund.eastmoney.com/{code}.html")
+    r = xa.universal.rget(f"http://fund.eastmoney.com/{code}.html")
     s = BeautifulSoup(r.text, "lxml")
     return (
         float(

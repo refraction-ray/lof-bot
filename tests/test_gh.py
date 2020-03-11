@@ -11,11 +11,11 @@ from lof.examples import render_github
 def test_render_template():
     with open(os.path.join(os.path.dirname(here), "test.html"), "w") as f:
         once = render_template(
-            code="SH501018", name="南方原油", date="2020-03-09", new="4c"
+            code="SZ162411", name="华宝油气", date="2020-03-09", cols="4c"
         )
-        twice = render(once, "SH501018")
-        third = render(twice, "SH501018")
-        fourth = render(third, "SH501018")
+        twice = render(once, "SZ162411")
+        third = render(twice, "SZ162411")
+        fourth = render(third, "SZ162411")
         f.writelines([fourth])
 
 
