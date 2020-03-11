@@ -3,9 +3,7 @@ import xalpha as xa
 import datetime as dt
 from xalpha.universal import cached
 import pandas as pd
-from collections import namedtuple
 import numpy as np
-import requests
 from bs4 import BeautifulSoup
 
 from .holdings import infos
@@ -100,7 +98,7 @@ def estimate_table(start, end, *cols):
 
 def get_newest_netvalue(code):
     code = code[1:]
-    r = requests.get(f"http://fund.eastmoney.com/{code}.html")
+    r = xa.univeral.rget(f"http://fund.eastmoney.com/{code}.html")
     s = BeautifulSoup(r.text, "lxml")
     return (
         float(

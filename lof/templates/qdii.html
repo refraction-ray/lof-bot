@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<!--version:2020.03.11.05:-->
+<!--version:2020.03.11.06:-->
 <head>
 <meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
 <title></title><link href='https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic&subset=latin-ext' rel='stylesheet' type='text/css' /><link href='https://fonts.googleapis.com/css?family=Lato:900,300&subset=latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}#write, body { height: auto; }
@@ -650,13 +650,20 @@ a {
 <div  id='write'  class = 'is-mac'><p>
 <center> {{ code }} <strong> {{name}} </strong> </center>
 </p>
-<figure><table><thead><tr><th style='text-align:center;' >&nbsp;</th><th style='text-align:center;' >实时预估（T）</th><th style='text-align:center;' >准确预估（T+1）</th><th style='text-align:center;' >实际净值（T+2）</th></tr></thead><tbody>
+<figure><table><thead><tr><th style='text-align:center;' >&nbsp;</th>
+{% if cols == "4c"%}
+<th style='text-align:center;' >实时预估（T）</th>
+{% endif %}
+<th style='text-align:center;' >准确预估（T+1）</th>
+<th style='text-align:center;' >实际净值（T+2）</th></tr></thead><tbody>
 
-<!--update:{{ date }}-08-00;{{ date }}-new--><!--end-->
+<!--update:{{ date }}-08-00;{{ date }}-{{ cols }}--><!--end-->
 
 
 <tr>
+{% if cols == "4c" %}
 <td style='text-align:center;' >&nbsp;</td>
+{% endif %}
 <td style='text-align:center;' >&nbsp;</td>
 <td style='text-align:center;' >&nbsp;</td>
 <td style='text-align:center;' >&nbsp;</td>

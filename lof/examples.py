@@ -39,7 +39,7 @@ def pred_ntf_oil(code, **kws):
         )
 
 
-def render_github(*codes, tmpl="qdii.html", date="2020-03-09"):
+def render_github(*codes, tmpl="qdii.html", date="2020-03-09", cols="4c"):
     with open(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "templates", tmpl
@@ -72,14 +72,16 @@ def render_github(*codes, tmpl="qdii.html", date="2020-03-09"):
                 ) as f:
                     f.writelines([render(r.text, code=code)])
             else:
-                _new_render_github(code, tmpl, date)
+                _new_render_github(code, tmpl, date, cols)
         elif r.status_code == 404:
-            _new_render_github(code, tmpl, date)
+            _new_render_github(code, tmpl, date, cols)
 
 
-def _new_render_github(code, tmpl, date):
+def _new_render_github(code, tmpl, date, cols="4c"):
     name = xa.get_rt(code)["name"]
-    once = render_template(tmpl=tmpl, code=code, name=name, date=date)
+    once = render_template(
+        tmpl=tmpl, code=code, name=name, date=date, cols=cols
+    )
     prev = (dt.datetime.now() - dt.datetime.strptime(date, "%Y-%m-%d")).days + 2
     for _ in range(prev):
         once = render(once, code)

@@ -85,8 +85,8 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                 ntext = otext
             else:
                 ntext = str(value)
-        elif v == "new":
-            ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-new--><!--end-->
+        elif v == "4c":
+            ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-4c--><!--end-->
 <tr>
 <td style='text-align:center;' >{dtobj.strftime("%Y-%m-%d")}</td>
 <td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(hours=1)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value1-->&nbsp;<!--end--></td>
@@ -96,6 +96,16 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
 <td style='text-align:center;' ><!--update:{next_onday(next_onday(dtobj)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
 </tr>
             """
+        elif v == "3c":
+            ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-3c--><!--end-->
+<tr>
+<td style='text-align:center;' >{dtobj.strftime("%Y-%m-%d")}</td>
+<td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(days=1, hours=1)).strftime(
+        "%Y-%m-%d-%H-%M"
+    )};{dtobj.strftime("%Y-%m-%d")}-value2-->&nbsp;<!--end--></td>
+<td style='text-align:center;' ><!--update:{next_onday(next_onday(dtobj)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
+</tr>
+                        """
 
     else:
         ntext = otext
