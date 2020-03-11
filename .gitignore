@@ -1,5 +1,6 @@
 dev*
-*ipynb*
+demo.ipynb*
+.ipynb*
 coverage.xml
 _*
 .coverage

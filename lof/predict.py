@@ -1,17 +1,36 @@
+import sys
 import xalpha as xa
 import datetime as dt
 from xalpha.universal import cached
 import pandas as pd
 from collections import namedtuple
 import numpy as np
+import requests
+from bs4 import BeautifulSoup
 
 from .holdings import infos
+from .utils import month_ago
 from .exceptions import DateMismatch, NonAccurate
 
 
-@cached("20200101")
-def get_daily(*args, **kws):
-    return xa.get_daily(*args, **kws)
+def set_cache_start(date=None):
+    """
+    If you realy have the idea of what you are doing, do it before any other imports,
+    otherwise ``get_daily`` cannot change the cache behavior.
+
+    :param date: str.
+    :return:
+    """
+    thismodule = sys.modules[__name__]
+    if not date:
+        date = getattr(thismodule, "cache_start", month_ago())
+    get_daily = cached(date)(xa.get_daily)
+    setattr(thismodule, "get_daily", get_daily)
+    setattr(thismodule, "cache_start", date)
+    xa.universal.reset_cache()
+
+
+set_cache_start()
 
 
 def daily_increment(code, date, lastday=None, _check=None):
@@ -42,7 +61,7 @@ def evaluate_fluctuation(hdict, date, lastday=None, _check=None):
         if infos.get(fundid):
             if infos[fundid].currency != "CNY":
                 exchange = daily_increment(
-                    infos[fundid].currency + "/CNY", date, lastday
+                    infos[fundid].currency + "/CNY", date, lastday, _check
                 )
         price += ratio * percent / 100 * exchange
     price += remain / 100  # currency part
@@ -79,15 +98,28 @@ def estimate_table(start, end, *cols):
     return cpdf
 
 
+def get_newest_netvalue(code):
+    code = code[1:]
+    r = requests.get(f"http://fund.eastmoney.com/{code}.html")
+    s = BeautifulSoup(r.text, "lxml")
+    return (
+        float(
+            s.findAll("dd", class_="dataNums")[1]
+            .find("span", class_="ui-font-large")
+            .string
+        ),
+        str(s.findAll("dt")[1]).split("(")[1].split(")")[0][7:],
+    )
+
 def get_qdii_tt(code, hdict):
     # predict d-1 netvalue of qdii funds
     tz_bj = dt.timezone(dt.timedelta(hours=8))
     yesterday = dt.datetime.now(tz=tz_bj) - dt.timedelta(1)
     yesterday_str = yesterday.strftime("%Y%m%d")
-    fund_last = get_daily("F" + code[2:]).iloc[-1]
-    last_date = fund_last["date"].strftime("%Y-%m-%d")
+    # fund_last = get_daily("F" + code[2:]).iloc[-1]
+    last_value, last_date = get_newest_netvalue("F"+code[2:])
     try:
-        net = fund_last["close"] * (
+        net = last_value * (
             1
             + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
         )
@@ -118,9 +150,6 @@ def get_qdii_t(
     return nettt, nett
 
 
-涨跌偏差分析 = namedtuple("涨跌偏差分析", ["预测涨的比实际少", "预测涨的比实际多", "预测跌的比实际多", "预测跌的比实际少"])
-
-
 def analyse_ud(cpdf, col1, col2):
     """
 
@@ -145,22 +174,49 @@ def analyse_ud(cpdf, col1, col2):
         else:
             dd += 1
         count += 1
-    return 涨跌偏差分析(
+    print(
+        "\n涨跌偏差分析:",
+        "\n预测涨的比实际少: ",
         round(uu / count, 2),
+        "\n预测涨的比实际多: ",
         round(ud / count, 2),
+        "\n预测跌的比实际多: ",
         round(du / count, 2),
+        "\n预测跌的比实际少: ",
         round(dd / count, 2),
     )
 
 
-预测偏差百分位 = namedtuple(
-    "预测偏差百分位",
-    ["百分之1分位", "百分之5分位", "百分之25分位", "百分之50分位", "百分之75分位", "百分之95分位", "百分之99分位"],
-)
-
-
 def analyse_percentile(cpdf, col):
     percentile = [1, 5, 25, 50, 75, 95, 99]
-    return 预测偏差百分位(
-        *[round(d, 3) for d in np.percentile(list(cpdf[col]), percentile)]
+    r = [round(d, 3) for d in np.percentile(list(cpdf[col]), percentile)]
+    print(
+        "\n预测偏差分位:",
+        "\n1% 分位: ",
+        r[0],
+        "\n5% 分位: ",
+        r[1],
+        "\n25% 分位: ",
+        r[2],
+        "\n50% 分位: ",
+        r[3],
+        "\n75% 分位: ",
+        r[4],
+        "\n95% 分位: ",
+        r[5],
+        "\n99% 分位: ",
+        r[6]
     )
+
+
+def analyse_deviate(cpdf, col):
+    l = np.array(cpdf[col])
+    d1, d2 = np.mean(np.abs(l)), np.sqrt(np.mean(l ** 2))
+    print("\n平均偏离: ", d1, "\n标准差偏离： ", d2)
+
+
+def analyse_all(cpdf, col, reference="real"):
+    print("净值预测回测分析:\n")
+    analyse_deviate(cpdf, col)
+    analyse_percentile(cpdf, col)
+    analyse_ud(cpdf, reference, col)

@@ -21,3 +21,16 @@ def is_cn_trading(dtobj=None):
             return False
         else:  # 交易日交易时间
             return True
+
+
+def month_ago():
+    now = dt.datetime.now()
+    before = now - dt.timedelta(30)
+    return before.strftime("%Y%m%d")
+
+
+def next_onday(dtobj):
+    dtobj += dt.timedelta(1)
+    while dtobj.strftime("%Y-%m-%d") not in xa.cons.opendate:
+        dtobj += dt.timedelta(1)
+    return dtobj

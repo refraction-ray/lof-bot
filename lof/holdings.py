@@ -99,11 +99,13 @@ infos = {
         "etfs/next-funds-nomura-crude-oil-long",
         "100JPY",
     ),
+    "172": Info("德国DAX30指数 (GDAXI)", "indices/germany-30", "EUR")
 }
 
 
 holdings = {}
 
+# 南方原油
 # 2019 第四季度季报披露
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001191374337197_1.pdf
 holdings_501018_19s3 = {
@@ -133,6 +135,7 @@ holdings_501018_19s4 = {
 holdings_501018_bc_cash = {"8849": 52.8, "8833": 35.2}
 # holdings_bc = {"8849": 60, "8833": 40}
 
+# 国泰商品
 # 2019 第四季度季报披露
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001161374256079_1.pdf
 holdings_160216_19s4 = {
@@ -184,11 +187,18 @@ holdings_160723_19s4 = {
 }
 holdings_160723_bc_cash = {"8849": 93.55}
 
+# 华安德国
+# reference: http://pdf.dfcfw.com/pdf/H2_AN202001211374413094_1.pdf
+# http://pdf.dfcfw.com/pdf/H2_AN202001201374397836_1.pdf 华安联接现在有个超级大户。。。
+holdings_513030_19s4 = {"172": 94.81}
+
 holdings["501018"] = holdings_501018_19s4
 holdings["160216"] = holdings_160216_19s4
 holdings["162411"] = holdings_162411_19s4
 holdings["161129"] = holdings_161129_19s4
 holdings["160723"] = holdings_160723_19s4
+
+holdings["513030"] = holdings_513030_19s4
 
 holdings["oil_rt"] = {
     "commodities/brent-oil": 40 * 0.9,

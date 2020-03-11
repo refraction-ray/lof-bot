@@ -5,6 +5,7 @@ import re
 from .predict import get_qdii_tt, get_qdii_t
 from .holdings import holdings
 from .exceptions import NonAccurate
+from .utils import next_onday
 
 
 def render(text, code=None):
@@ -20,13 +21,6 @@ def render(text, code=None):
         s = l[1]
     r += text[s:]
     return r
-
-
-def next_onday(dtobj):
-    dtobj += dt.timedelta(1)
-    while dtobj.strftime("%Y-%m-%d") not in xa.cons.opendate:
-        dtobj += dt.timedelta(1)
-    return dtobj
 
 
 def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
@@ -90,3 +84,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         ntext = otext
     print("replaced as %s" % ntext)
     return ntext
+
+
+def render_template():
+    pass
