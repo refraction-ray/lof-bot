@@ -37,7 +37,7 @@ def daily_increment(code, date, lastday=None, _check=None):
     tds = get_daily(code=code, end=date, prev=20)
     tds = tds[tds["date"] <= date]
     if _check:
-        if tds.iloc[-1]["date"] <= dt.datetime.strptime(
+        if tds.iloc[-1]["date"] < dt.datetime.strptime(
             _check, "%Y-%m-%d"
         ):  # in case data is not up to date
             raise DateMismatch(code)
@@ -111,14 +111,26 @@ def get_newest_netvalue(code):
         str(s.findAll("dt")[1]).split("(")[1].split(")")[0][7:],
     )
 
-def get_qdii_tt(code, hdict):
+
+def get_qdii_tt(code, hdict, date=None):
     # predict d-1 netvalue of qdii funds
-    tz_bj = dt.timezone(dt.timedelta(hours=8))
-    yesterday = dt.datetime.now(tz=tz_bj) - dt.timedelta(1)
-    yesterday_str = yesterday.strftime("%Y%m%d")
-    # fund_last = get_daily("F" + code[2:]).iloc[-1]
-    last_value, last_date = get_newest_netvalue("F"+code[2:])
+    if date is None:
+        tz_bj = dt.timezone(dt.timedelta(hours=8))
+        yesterday = dt.datetime.now(tz=tz_bj) - dt.timedelta(1)
+        yesterday_str = yesterday.strftime("%Y%m%d")
+        # fund_last = get_daily("F" + code[2:]).iloc[-1]
+        last_value, last_date = get_newest_netvalue("F" + code[2:])
+    else:
+        today = date.replace("-", "").replace("/", "")
+        today_obj = dt.datetime.strptime(today, "%Y%m%d")
+        yesterday = today_obj - dt.timedelta(1)
+        yesterday_str = yesterday.strftime("%Y%m%d")
+        fund_price = get_daily("F" + code[2:])
+        fund_last = fund_price[fund_price["date"] < date].iloc[-1]
+        last_value = fund_last["close"]
+        last_date = fund_last["date"].strftime("%Y-%m-%d")
     try:
+        print("the last date %s" % last_date)
         net = last_value * (
             1
             + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
@@ -205,7 +217,7 @@ def analyse_percentile(cpdf, col):
         "\n95% 分位: ",
         r[5],
         "\n99% 分位: ",
-        r[6]
+        r[6],
     )
 
 

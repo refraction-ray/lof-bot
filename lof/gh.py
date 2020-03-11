@@ -1,8 +1,9 @@
 import datetime as dt
 import xalpha as xa
 import re
+from jinja2 import Environment, PackageLoader
 
-from .predict import get_qdii_tt, get_qdii_t
+from .predict import get_qdii_tt, get_qdii_t, get_newest_netvalue
 from .holdings import holdings
 from .exceptions import NonAccurate
 from .utils import next_onday
@@ -33,13 +34,17 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
     if now >= dtobj:
         v = otext.split(">")[0].split(";")[1].split("-")[-3]
         vdtstr = otext.split(";")[1][:10]  # -
+        print(vdtstr)
         if not est_holdings:
             est_holdings = holdings[code[2:]]
         if v == "value1":
             if not rt_holdings:
                 rt_holdings = holdings["oil_rt"]
             # 实时净值
-            if now.hour > 8:
+            tz_bj = dt.timezone(dt.timedelta(hours=8))
+            today = dt.datetime.now(tz=tz_bj).strftime("%Y-%m-%d")
+            if today == vdtstr:
+                print("today update value1")
                 try:
                     _, ntext = get_qdii_t(code, est_holdings, rt_holdings)
                     ntext = str(round(ntext, 3))
@@ -58,16 +63,27 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                 ntext = otext.split(">")[1].split("<")[0]
         elif v == "value2":
             try:
-                ntext = str(round(get_qdii_tt(code, est_holdings), 3))
-            except NonAccurate:
+                ntext = str(
+                    round(get_qdii_tt(code, est_holdings, date=vdtstr), 3)
+                )
+            except NonAccurate as e:
+                print(e.reason)
                 ntext = otext
         elif v == "value3":
             # 真实净值
-            line = xa.get_daily(code="F" + code[2:], end=vdtstr).iloc[-1]
-            if line["date"].strftime("%Y-%m-%d") != vdtstr:
+            fund_price = xa.get_daily(code="F" + code[2:], end=vdtstr)
+            fund_line = fund_price[fund_price["date"] == vdtstr]
+            if len(fund_line) == 0:
+                value, date = get_newest_netvalue(
+                    "F" + code[2:]
+                )  # incase get_daily -1 didn't get timely update
+            else:
+                value = fund_line.iloc[0]["close"]
+                date = fund_line.iloc[0]["date"].strftime("%Y-%m-%d")
+            if date != vdtstr:
                 ntext = otext
             else:
-                ntext = str(line["close"])
+                ntext = str(value)
         elif v == "new":
             ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-new--><!--end-->
 <tr>
@@ -86,5 +102,10 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
     return ntext
 
 
-def render_template():
-    pass
+env = Environment(loader=PackageLoader("lof", "templates"))
+
+
+def render_template(tmpl="qdii.html", **kws):
+
+    template = env.get_template(tmpl)
+    return template.render(**kws)

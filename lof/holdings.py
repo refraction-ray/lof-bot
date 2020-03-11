@@ -99,7 +99,7 @@ infos = {
         "etfs/next-funds-nomura-crude-oil-long",
         "100JPY",
     ),
-    "172": Info("德国DAX30指数 (GDAXI)", "indices/germany-30", "EUR")
+    "172": Info("德国DAX30指数 (GDAXI)", "indices/germany-30", "EUR"),
 }
 
 

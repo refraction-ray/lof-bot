@@ -1,9 +1,13 @@
 import xalpha as xa
+import requests
+import os
+import datetime as dt
 
 from .predict import get_qdii_t
 from .holdings import holdings
 from .notification import notify
 from .exceptions import NonAccurate
+from .gh import render_template, render
 
 
 def pred_ntf_oil(code, **kws):
@@ -33,3 +37,57 @@ def pred_ntf_oil(code, **kws):
             token=kws.get("token"),
             _type=_type,
         )
+
+
+def render_github(*codes, tmpl="qdii.html", date="2020-03-09"):
+    with open(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "templates", tmpl
+        ),
+        "r",
+    ) as f:
+        t = f.read()
+    nversion = t.split("\n")[2].split(":")[1]
+    print(nversion)
+    for code in codes:
+        r = requests.get(
+            "https://raw.githubusercontent.com/refraction-ray/lof-bot/gh-pages/%s.html"
+            % code
+        )
+        if r.status_code == 200:
+            version_line = r.text.split("\n")[2]
+            if len(version_line.split(":")) > 1:
+                version = version_line.split(":")[1]
+            else:
+                version = "-0.0.1"
+            if version == nversion:
+                with open(
+                    os.path.join(
+                        os.path.dirname(
+                            os.path.dirname(os.path.abspath(__file__))
+                        ),
+                        "%s.html" % code,
+                    ),
+                    "w",
+                ) as f:
+                    f.writelines([render(r.text, code=code)])
+            else:
+                _new_render_github(code, tmpl, date)
+        elif r.status_code == 404:
+            _new_render_github(code, tmpl, date)
+
+
+def _new_render_github(code, tmpl, date):
+    name = xa.get_rt(code)["name"]
+    once = render_template(tmpl=tmpl, code=code, name=name, date=date)
+    prev = (dt.datetime.now() - dt.datetime.strptime(date, "%Y-%m-%d")).days + 2
+    for _ in range(prev):
+        once = render(once, code)
+    with open(
+        os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "%s.html" % code,
+        ),
+        "w",
+    ) as f:
+        f.writelines([once])
