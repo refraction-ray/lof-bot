@@ -34,17 +34,15 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
     if now >= dtobj:
         v = otext.split(">")[0].split(";")[1].split("-")[-3]
         vdtstr = otext.split(";")[1][:10]  # -
-        print(vdtstr)
         if not est_holdings:
             est_holdings = holdings[code[2:]]
+        tz_bj = dt.timezone(dt.timedelta(hours=8))
+        today = dt.datetime.now(tz=tz_bj).strftime("%Y-%m-%d")
         if v == "value1":
             if not rt_holdings:
                 rt_holdings = holdings["oil_rt"]
             # 实时净值
-            tz_bj = dt.timezone(dt.timedelta(hours=8))
-            today = dt.datetime.now(tz=tz_bj).strftime("%Y-%m-%d")
             if today == vdtstr:
-                print("today update value1")
                 try:
                     _, ntext = get_qdii_t(code, est_holdings, rt_holdings)
                     ntext = str(round(ntext, 3))
@@ -63,9 +61,12 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                 ntext = otext.split(">")[1].split("<")[0]
         elif v == "value2":
             try:
-                ntext = str(
-                    round(get_qdii_tt(code, est_holdings, date=vdtstr), 3)
-                )
+                if today == vdtstr:
+                    ntext = str(round(get_qdii_tt(code, est_holdings), 3))
+                else:
+                    ntext = str(
+                        round(get_qdii_tt(code, est_holdings, date=vdtstr), 3)
+                    )
             except NonAccurate as e:
                 print(e.reason)
                 ntext = otext

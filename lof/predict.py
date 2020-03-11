@@ -121,16 +121,15 @@ def get_qdii_tt(code, hdict, date=None):
         # fund_last = get_daily("F" + code[2:]).iloc[-1]
         last_value, last_date = get_newest_netvalue("F" + code[2:])
     else:
-        today = date.replace("-", "").replace("/", "")
-        today_obj = dt.datetime.strptime(today, "%Y%m%d")
-        yesterday = today_obj - dt.timedelta(1)
-        yesterday_str = yesterday.strftime("%Y%m%d")
+        yesterday_str = date.replace("-", "").replace("/", "")
+        # today_obj = dt.datetime.strptime(today, "%Y%m%d")
+        # yesterday = today_obj - dt.timedelta(1)
+        # yesterday_str = yesterday.strftime("%Y%m%d")
         fund_price = get_daily("F" + code[2:])
         fund_last = fund_price[fund_price["date"] < date].iloc[-1]
         last_value = fund_last["close"]
         last_date = fund_last["date"].strftime("%Y-%m-%d")
     try:
-        print("the last date %s" % last_date)
         net = last_value * (
             1
             + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
