@@ -1,5 +1,4 @@
 dev*
-S*.html
 demo.ipynb*
 .ipynb*
 coverage.xml
