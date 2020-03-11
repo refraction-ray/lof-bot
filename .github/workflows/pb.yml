@@ -4,7 +4,7 @@ on:
     branches:
       - master
   schedule:
-    - cron:  '*/30 * * * *'
+    - cron:  '*/50 * * * *'
 jobs:
   tests:
     runs-on: ubuntu-18.04

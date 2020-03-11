@@ -13,8 +13,8 @@ LOF-BOT
 </p>
 
 * [南方原油](/lof-bot/SH501018.html)
-* [华宝油气](/lof-bot/SH162411.html)
-* [国泰商品](/lof-bot/SH162411.html)
+* [华宝油气](/lof-bot/SZ162411.html)
+* [国泰商品](/lof-bot/SZ162411.html)
 
 More funds are coming soon.
 
