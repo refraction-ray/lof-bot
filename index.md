@@ -12,9 +12,10 @@ LOF-BOT
 <a href="https://github.com/lof-bot/subway/actions"><img alt="Actions Status" src="https://github.com/refraction-ray/lof-bot/workflows/gh/badge.svg"></a>
 </p>
 
-* [南方原油](/lof-bot/SH501018.html)
-* [华宝油气](/lof-bot/SZ162411.html)
-* [国泰商品](/lof-bot/SZ162411.html)
+* [南方原油](/lof-bot/SH501018.html) (501018)
+* [华宝油气](/lof-bot/SZ162411.html) (162411)
+* [国泰商品](/lof-bot/SZ160216.html) (160216)
+*  [嘉实原油](/lof-bot/SZ160723.html) (160723)
 
 More funds are coming soon.
 

@@ -100,6 +100,17 @@ infos = {
         "100JPY",
     ),
     "172": Info("德国DAX30指数 (GDAXI)", "indices/germany-30", "EUR"),
+    "954528": Info(
+        "Dow Jones US Select Oil Exploration & Production (DJSOEP)",
+        "indices/dj-us-select-oil-exploration-prod",
+        "USD",
+    ),
+    "998951": Info(
+        "S&P GSCI Crude Oil Total Return (SPGSCLTR)",
+        "indices/sp-gsci-crude-oil-tr-historical-data",
+        "USD",
+    )
+    # not the one for huaanbiaopushiyou
 }
 
 
@@ -187,6 +198,10 @@ holdings_160723_19s4 = {
 }
 holdings_160723_bc_cash = {"8849": 93.55}
 
+# 广发道琼斯美国石油开发与生产指数
+# reference: 广发道琼斯美国石油开发与生产指数
+holdings_162719_19s4 = {"954528": 88.81}
+
 # 华安德国
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001211374413094_1.pdf
 # http://pdf.dfcfw.com/pdf/H2_AN202001201374397836_1.pdf 华安联接现在有个超级大户。。。
@@ -197,6 +212,7 @@ holdings["160216"] = holdings_160216_19s4
 holdings["162411"] = holdings_162411_19s4
 holdings["161129"] = holdings_161129_19s4
 holdings["160723"] = holdings_160723_19s4
+holdings["162719"] = holdings_162719_19s4
 
 holdings["513030"] = holdings_513030_19s4
 

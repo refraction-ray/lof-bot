@@ -9,7 +9,7 @@ from lof.examples import render_github
 
 
 def main():
-    render_github("SH501018", "SZ160216", "SZ162411")
+    render_github("SH501018", "SZ160216", "SZ162411", "SZ160723")
     render_github("SH513030", cols="3c")
 
 
