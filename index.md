@@ -12,10 +12,20 @@ LOF-BOT
 <a href="https://github.com/lof-bot/subway/actions"><img alt="Actions Status" src="https://github.com/refraction-ray/lof-bot/workflows/gh/badge.svg"></a>
 </p>
 
+#### 原油类基金
+
 * [南方原油](/lof-bot/SH501018.html) (501018)
 * [华宝油气](/lof-bot/SZ162411.html) (162411)
 * [国泰商品](/lof-bot/SZ160216.html) (160216)
-*  [嘉实原油](/lof-bot/SZ160723.html) (160723)
+* [嘉实原油](/lof-bot/SZ160723.html) (160723)
+* [易方达原油](/lof-bot/SZ161129.html) (161129)
+
+#### 其他 QDII 基金
+
+* [华安德国30](/lof-bot/SH513030.html) (513030/000614)
+* [博时标普500](/lof-bot/SH513500.html) (513500/050025)
+
+
 
 More funds are coming soon.
 
