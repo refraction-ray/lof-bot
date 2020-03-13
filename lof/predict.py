@@ -38,7 +38,9 @@ def daily_increment(code, date, lastday=None, _check=None):
         if tds.iloc[-1]["date"] < dt.datetime.strptime(
             _check, "%Y-%m-%d"
         ):  # in case data is not up to date
-            raise DateMismatch(code)
+            raise DateMismatch(
+                code, reason="%s has no data upto %s" % (code, _check)
+            )
     if not lastday:
         ratio = tds.iloc[-1]["close"] / tds.iloc[-2]["close"]
     else:
@@ -115,18 +117,22 @@ def get_qdii_tt(code, hdict, date=None):
     try:
         if date is None:
             tz_bj = dt.timezone(dt.timedelta(hours=8))
-            today = dt.datetime.now(tz=tz_bj).replace(tzinfo=None)
+            today = (
+                dt.datetime.now(tz=tz_bj)
+                .replace(tzinfo=None)
+                .replace(hour=0, minute=0, second=0, microsecond=0)
+            )
             yesterday = last_onday(today)
             yesterday_str = yesterday.strftime("%Y%m%d")
             last_value, last_date = get_newest_netvalue("F" + code[2:])
             last_date_obj = dt.datetime.strptime(last_date, "%Y-%m-%d")
-            if last_date_obj < last_onday(yesterday):
+            if last_date_obj < last_onday(yesterday):  # 前天数据还没更新
                 raise DateMismatch(
                     code,
                     reason="%s netvalue has not been updated to the day before yesterday"
                     % code,
                 )
-            elif last_date_obj > last_onday(yesterday):
+            elif last_date_obj > last_onday(yesterday):  # 昨天数据已出，不需要在预测了
                 print(
                     "no need to predict t-1 value since it has been out for %s"
                     % code
@@ -144,8 +150,7 @@ def get_qdii_tt(code, hdict, date=None):
             + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
         )
     except DateMismatch as e:
-        error_msg = "%s has no data up to %s" % (e.code, yesterday_str)
-        print(error_msg)
+        error_msg = e.reason
         error_msg += ", therefore %s cannot predict correctly" % code
         raise NonAccurate(code=code, reason=error_msg)
     return net

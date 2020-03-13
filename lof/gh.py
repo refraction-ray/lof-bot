@@ -54,7 +54,8 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                         + "<"
                         + otext.split("<")[-1]
                     )
-                except NonAccurate:
+                except NonAccurate as e:
+                    print(e.reason)
                     ntext = otext
             else:
                 # 新的一天
@@ -105,7 +106,8 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                     v = get_nonqdii_t(code, est_holdings, date=vdtstr)
                     ntext = str(round(v, 3))
 
-            except NonAccurate:
+            except NonAccurate as e:
+                print(e.reason)
                 ntext = otext
 
         elif v == "4c":
