@@ -24,8 +24,11 @@ LOF-BOT
 
 * [华安德国30](/lof-bot/SH513030.html) (513030/000614)
 * [博时标普500](/lof-bot/SH513500.html) (513500/050025)
-
-
+* [易方达纳斯达克100](/lof-bot/SZ161130.html) (161130)
+* 日经225:
+  * [513880](/lof-bot/SH513880.html)
+  * [513520](/lof-bot/SH513520.html)
+  * [513000](/lof-bot/SH513000.html)
 
 More funds are coming soon.
 

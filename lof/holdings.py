@@ -234,6 +234,8 @@ holdings["513500"] = holdings_513500_19s4
 holdings["161130"] = holdings_161130_19s4
 
 holdings["513880"] = holdings_513880_19s4
+holdings["513520"] = holdings_513880_19s4
+holdings["513000"] = holdings_513880_19s4
 
 holdings["oil_rt"] = {
     "commodities/brent-oil": 40 * 0.9,

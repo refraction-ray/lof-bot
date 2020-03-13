@@ -3,7 +3,7 @@ import xalpha as xa
 import re
 from jinja2 import Environment, PackageLoader
 
-from .predict import get_qdii_tt, get_qdii_t, get_newest_netvalue
+from .predict import get_qdii_tt, get_qdii_t, get_newest_netvalue, get_nonqdii_t
 from .holdings import holdings
 from .exceptions import NonAccurate
 from .utils import next_onday
@@ -85,6 +85,18 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                 ntext = otext
             else:
                 ntext = str(value)
+        elif v == "value4":  # non qdii 同日 qdii lof 的实时净值
+            try:
+                if today == vdtstr:
+                    v = get_nonqdii_t(code, est_holdings)
+                else:
+                    v = get_nonqdii_t(code, est_holdings, date=vdtstr)
+                ntext = str(round(v, 3))
+                if today == vdtstr:
+                    ntext += f" ({now.strftime('%H:%M')})"
+            except NonAccurate:
+                ntext = otext
+
         elif v == "4c":
             ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-4c--><!--end-->
 <tr>
@@ -104,6 +116,16 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         "%Y-%m-%d-%H-%M"
     )};{dtobj.strftime("%Y-%m-%d")}-value2-->&nbsp;<!--end--></td>
 <td style='text-align:center;' ><!--update:{next_onday(next_onday(dtobj)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
+</tr>
+                        """
+        elif v == "3crt":
+            ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-3crt--><!--end-->
+<tr>
+<td style='text-align:center;' >{dtobj.strftime("%Y-%m-%d")}</td>
+<td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(hours=2)).strftime(
+        "%Y-%m-%d-%H-%M"
+    )};{dtobj.strftime("%Y-%m-%d")}-value4-->&nbsp;<!--end--></td>
+<td style='text-align:center;' ><!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
 </tr>
                         """
 

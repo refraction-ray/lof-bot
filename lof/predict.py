@@ -166,6 +166,54 @@ def get_qdii_t(
     return nettt, nett
 
 
+def get_nonqdii_t(code, tdict, date=None):
+    if not date:  # 今日实时净值
+        last_value, last_date = get_newest_netvalue("F" + code[2:])
+        tz_bj = dt.timezone(dt.timedelta(hours=8))
+        today = dt.datetime.now(tz=tz_bj)
+        yesterday = last_onday(today)
+        yesterday_str = yesterday.strftime("%Y-%m-%d")
+        last_value, last_date = get_newest_netvalue("F" + code[2:])
+        if last_date != yesterday_str:
+            raise DateMismatch(
+                "%s netvalue has not been updated to the day before yesterday"
+                % code
+            )
+        t = 0
+        r = 100
+        for k, v in tdict.items():
+            if infos.get(k):
+                url = infos[k].url
+            else:
+                url = k
+            print(url)
+            aim_current = xa.get_rt(url)
+            delta1 = aim_current["percent"] / 100
+            currency = aim_current["currency"]
+            if currency == "JPY":
+                delta2 = xa.get_rt("currencies/jpy-cny")["percent"] / 100
+            elif currency == "USD":
+                delta2 = xa.get_rt("currencies/usd-cny")["percent"] / 100
+            elif currency == "CNY":
+                delta2 = 0
+            else:
+                raise NonAccurate(
+                    "%s transformation have not been implemented" % currency
+                )
+
+            r -= v
+            t += v * (1 + delta1) * (1 + delta2) / 100
+
+        t += r / 100
+        return last_value * t
+    # 过去净值同日预测 date 日, date 日一定是交易日
+    date_str = date.replace("-", "").replace("/", "")
+    funddf = xa.get_daily("F" + code[2:])
+    last_value = funddf[funddf["date"] < date_str].iloc[-1]["close"]
+    net = last_value * (1 + evaluate_fluctuation(tdict, date_str) / 100)
+    return net
+
+
 def analyse_ud(cpdf, col1, col2):
     """
 
