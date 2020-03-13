@@ -9,7 +9,7 @@ LOF-BOT
 ## 净值预测基金列表：
 
 <p align="center">
-<a href="https://github.com/lof-bot/subway/actions"><img alt="Actions Status" src="https://github.com/refraction-ray/lof-bot/workflows/gh/badge.svg"></a>
+<a href="https://github.com/refraction-ray/lof-bot/actions"><img alt="Actions Status" src="https://github.com/refraction-ray/lof-bot/workflows/gh/badge.svg"></a>
 </p>
 
 #### 原油类基金
@@ -32,7 +32,7 @@ More funds are coming soon.
 ## 场内实时溢价提醒
 
 <p align="center">
-<a href="https://github.com/lof-bot/subway/actions"><img alt="Actions Status" src="https://github.com/refraction-ray/lof-bot/workflows/pb/badge.svg"></a>
+<a href="https://github.com/refraction-ray/lof-bot/actions"><img alt="Actions Status" src="https://github.com/refraction-ray/lof-bot/workflows/pb/badge.svg"></a>
 </p>
 
 场内跟踪基金溢价阈值超过一定限度，自动通过 pushbullet 通知。如果你也想获取该提醒通知功能，请 fork 该项目，并且在 forked 项目 setting 中添加自己 pushbullet 的 token 作为 ``PB_TOKEN`` 即可。

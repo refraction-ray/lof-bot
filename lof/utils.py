@@ -34,3 +34,10 @@ def next_onday(dtobj):
     while dtobj.strftime("%Y-%m-%d") not in xa.cons.opendate:
         dtobj += dt.timedelta(1)
     return dtobj
+
+
+def last_onday(dtobj):
+    dtobj -= dt.timedelta(1)
+    while dtobj.strftime("%Y-%m-%d") not in xa.cons.opendate:
+        dtobj -= dt.timedelta(1)
+    return dtobj

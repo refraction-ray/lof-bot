@@ -7,7 +7,7 @@ import numpy as np
 from bs4 import BeautifulSoup
 
 from .holdings import infos
-from .utils import month_ago
+from .utils import month_ago, last_onday
 from .exceptions import DateMismatch, NonAccurate
 
 
@@ -62,7 +62,7 @@ def evaluate_fluctuation(hdict, date, lastday=None, _check=None):
                     infos[fundid].currency + "/CNY", date, lastday, _check
                 )
         price += ratio * percent / 100 * exchange
-    price += remain / 100  # currency part
+    price += remain / 100
     return (price - 1) * 100
 
 
@@ -114,10 +114,17 @@ def get_qdii_tt(code, hdict, date=None):
     # predict d-1 netvalue of qdii funds
     if date is None:
         tz_bj = dt.timezone(dt.timedelta(hours=8))
-        yesterday = dt.datetime.now(tz=tz_bj) - dt.timedelta(1)
+        today = dt.datetime.now(tz=tz_bj)
+        # yesterday = today - dt.timedelta(1)
+        yesterday = last_onday(today)
         yesterday_str = yesterday.strftime("%Y%m%d")
         # fund_last = get_daily("F" + code[2:]).iloc[-1]
         last_value, last_date = get_newest_netvalue("F" + code[2:])
+        if last_date != last_onday(yesterday).strftime("%Y-%m-%d"):
+            raise DateMismatch(
+                "%s netvalue has not been updated to the day before yesterday"
+                % code
+            )
     else:
         yesterday_str = date.replace("-", "").replace("/", "")
         # today_obj = dt.datetime.strptime(today, "%Y%m%d")

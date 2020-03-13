@@ -112,6 +112,7 @@ infos = {
     ),
     # not the one for huaanbiaopushiyou
     "166": Info("美国标准普尔500指数 (SPX)", "indices/us-spx-500", "USD"),
+    "178": Info("日经225指数 (N225)", "indices/japan-ni225", "100JPY"),
 }
 
 
@@ -212,6 +213,9 @@ holdings_513030_19s4 = {"172": 94.81}
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001171374274630_1.pdf
 holdings_513500_19s4 = {"166": 99.5}  # 这一仓位经过调整，比较符合实际的预测
 
+# 日经225
+holdings_513880_19s4 = {"178": 95}
+
 holdings["501018"] = holdings_501018_19s4
 holdings["160216"] = holdings_160216_19s4
 holdings["162411"] = holdings_162411_19s4
@@ -221,6 +225,7 @@ holdings["162719"] = holdings_162719_19s4
 
 holdings["513030"] = holdings_513030_19s4
 holdings["513500"] = holdings_513500_19s4
+# holdings["513880"] = holdings_513880_19s4
 
 
 holdings["oil_rt"] = {
