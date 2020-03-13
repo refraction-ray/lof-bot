@@ -1,4 +1,4 @@
-name: gh
+name: gh-push
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-18.04
-    name: update gh pages
+    name: force update gh pages
     steps:
       - uses: actions/checkout@v2
         with:

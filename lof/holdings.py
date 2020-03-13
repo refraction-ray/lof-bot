@@ -114,6 +114,11 @@ infos = {
     "166": Info("美国标准普尔500指数 (SPX)", "indices/us-spx-500", "USD"),
     "178": Info("日经225指数 (N225)", "indices/japan-ni225", "100JPY"),
     "20": Info("纳斯达克100指数 (NDX)", "indices/nq-100", "USD"),
+    "954018": Info(
+        "中证海外中国互联网美元指数 (H11137)",
+        "indices/csi-overseas-china-internet-usd",
+        "USD",
+    ),
 }
 
 
@@ -220,7 +225,10 @@ holdings_513880_19s4 = {"178": 95}
 # 易方达 nasdaq 100
 holdings_161130_19s4 = {"20": 94}
 
-# TODO: 同日 qdii 如日经，和中国互联估算
+# 交银中国互联
+holdings_164906_19s4 = {"954018": 95}
+
+# couldn't find 互联网50 for 中概互联 at investing.com
 
 holdings["501018"] = holdings_501018_19s4
 holdings["160216"] = holdings_160216_19s4
@@ -236,6 +244,7 @@ holdings["161130"] = holdings_161130_19s4
 holdings["513880"] = holdings_513880_19s4
 holdings["513520"] = holdings_513880_19s4
 holdings["513000"] = holdings_513880_19s4
+holdings["164906"] = holdings_164906_19s4
 
 holdings["oil_rt"] = {
     "commodities/brent-oil": 40 * 0.9,

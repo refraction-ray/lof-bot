@@ -654,8 +654,10 @@ a {
 {% if cols == "4c"%}
 <th style='text-align:center;' >实时预估（T）</th>
 {% endif %}
-<th style='text-align:center;' >准确预估（T+1）</th>
-<th style='text-align:center;' >实际净值（T+2）</th></tr></thead><tbody>
+<th style='text-align:center;' >准确预估 {% if cols == "3crt" %}（T） {% else %} (T+1) {% endif %}
+</th>
+<th style='text-align:center;' >实际净值 {% if cols == "3crt" %}（T+1） {% else %} (T+2) {% endif %}
+</th></tr></thead><tbody>
 
 <!--update:{{ date }}-08-00;{{ date }}-{{ cols }}--><!--end-->
 
