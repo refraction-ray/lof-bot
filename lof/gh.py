@@ -37,7 +37,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         if not est_holdings:
             est_holdings = holdings[code[2:]]
         tz_bj = dt.timezone(dt.timedelta(hours=8))
-        today = dt.datetime.now(tz=tz_bj).strftime("%Y-%m-%d")
+        today = now.strftime("%Y-%m-%d")
         if v == "value1":
             if not rt_holdings:
                 rt_holdings = holdings["oil_rt"]
@@ -88,12 +88,23 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         elif v == "value4":  # non qdii 同日 qdii lof 的实时净值
             try:
                 if today == vdtstr:
-                    v = get_nonqdii_t(code, est_holdings)
+                    if now.hour > 9 and now.hour < 15:
+                        v = get_nonqdii_t(code, est_holdings)
+                        ntext = str(round(v, 3))
+                        ntext += f" ({now.strftime('%H:%M')})"
+                        ntext = (
+                            otext.split(">")[0]
+                            + ">"
+                            + ntext
+                            + "<"
+                            + otext.split("<")[-1]
+                        )
+                    else:
+                        ntext = otext
                 else:
                     v = get_nonqdii_t(code, est_holdings, date=vdtstr)
-                ntext = str(round(v, 3))
-                if today == vdtstr:
-                    ntext += f" ({now.strftime('%H:%M')})"
+                    ntext = str(round(v, 3))
+
             except NonAccurate:
                 ntext = otext
 

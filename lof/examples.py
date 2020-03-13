@@ -39,7 +39,9 @@ def pred_ntf_oil(code, **kws):
         )
 
 
-def render_github(*codes, tmpl="qdii.html", date="2020-03-09", cols="4c"):
+def render_github(
+    *codes, tmpl="qdii.html", date="2020-03-09", cols="4c", refresh=False
+):
     with open(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "templates", tmpl
@@ -50,11 +52,15 @@ def render_github(*codes, tmpl="qdii.html", date="2020-03-09", cols="4c"):
     nversion = t.split("\n")[2].split(":")[1]
     print(nversion)
     for code in codes:
-        r = requests.get(
-            "https://raw.githubusercontent.com/refraction-ray/lof-bot/gh-pages/%s.html"
-            % code
-        )
-        if r.status_code == 200:
+        if not refresh:
+            r = requests.get(
+                "https://raw.githubusercontent.com/refraction-ray/lof-bot/gh-pages/%s.html"
+                % code
+            )
+            sc = r.status_code
+        else:  # 强制刷新
+            sc = 404
+        if sc == 200:
             version_line = r.text.split("\n")[2]
             if len(version_line.split(":")) > 1:
                 version = version_line.split(":")[1]
@@ -73,8 +79,10 @@ def render_github(*codes, tmpl="qdii.html", date="2020-03-09", cols="4c"):
                     f.writelines([render(r.text, code=code)])
             else:
                 _new_render_github(code, tmpl, date, cols)
-        elif r.status_code == 404:
+        elif sc == 404:
             _new_render_github(code, tmpl, date, cols)
+        else:
+            print("get weird http code from github %s" % sc)
 
 
 def _new_render_github(code, tmpl, date, cols="4c"):
