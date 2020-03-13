@@ -112,29 +112,33 @@ def get_newest_netvalue(code):
 
 def get_qdii_tt(code, hdict, date=None):
     # predict d-1 netvalue of qdii funds
-    if date is None:
-        tz_bj = dt.timezone(dt.timedelta(hours=8))
-        today = dt.datetime.now(tz=tz_bj)
-        # yesterday = today - dt.timedelta(1)
-        yesterday = last_onday(today)
-        yesterday_str = yesterday.strftime("%Y%m%d")
-        # fund_last = get_daily("F" + code[2:]).iloc[-1]
-        last_value, last_date = get_newest_netvalue("F" + code[2:])
-        if last_date != last_onday(yesterday).strftime("%Y-%m-%d"):
-            raise DateMismatch(
-                "%s netvalue has not been updated to the day before yesterday"
-                % code
-            )
-    else:
-        yesterday_str = date.replace("-", "").replace("/", "")
-        # today_obj = dt.datetime.strptime(today, "%Y%m%d")
-        # yesterday = today_obj - dt.timedelta(1)
-        # yesterday_str = yesterday.strftime("%Y%m%d")
-        fund_price = get_daily("F" + code[2:])
-        fund_last = fund_price[fund_price["date"] < date].iloc[-1]
-        last_value = fund_last["close"]
-        last_date = fund_last["date"].strftime("%Y-%m-%d")
     try:
+        if date is None:
+            tz_bj = dt.timezone(dt.timedelta(hours=8))
+            today = dt.datetime.now(tz=tz_bj).replace(tzinfo=None)
+            yesterday = last_onday(today)
+            yesterday_str = yesterday.strftime("%Y%m%d")
+            last_value, last_date = get_newest_netvalue("F" + code[2:])
+            last_date_obj = dt.datetime.strptime(last_date, "%Y-%m-%d")
+            if last_date_obj < last_onday(yesterday):
+                raise DateMismatch(
+                    code,
+                    reason="%s netvalue has not been updated to the day before yesterday"
+                    % code,
+                )
+            elif last_date_obj > last_onday(yesterday):
+                print(
+                    "no need to predict t-1 value since it has been out for %s"
+                    % code
+                )
+                return last_value
+        else:
+            yesterday_str = date.replace("-", "").replace("/", "")
+            fund_price = get_daily("F" + code[2:])
+            fund_last = fund_price[fund_price["date"] < date].iloc[-1]
+            last_value = fund_last["close"]
+            last_date = fund_last["date"].strftime("%Y-%m-%d")
+
         net = last_value * (
             1
             + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
