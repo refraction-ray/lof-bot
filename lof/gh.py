@@ -6,7 +6,7 @@ from jinja2 import Environment, PackageLoader
 from .predict import get_qdii_tt, get_qdii_t, get_newest_netvalue, get_nonqdii_t
 from .holdings import holdings
 from .exceptions import NonAccurate
-from .utils import next_onday
+from .utils import next_onday, last_onday
 
 
 def render(text, code=None):
@@ -62,7 +62,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                 ntext = otext.split(">")[1].split("<")[0]
         elif v == "value2":
             try:
-                if today == vdtstr:
+                if last_onday(now).strftime("%Y-%m-%d") == vdtstr:
                     ntext = str(round(get_qdii_tt(code, est_holdings), 3))
                 else:
                     ntext = str(

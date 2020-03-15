@@ -33,6 +33,8 @@ LOF-BOT
 
 More funds are coming soon.
 
+净值预估的页面更新机制可能还存在问题，数据仅供参考，如果预测数据过于离谱，可能是有 bug 待捉。
+
 ## 场内实时溢价提醒
 
 <p align="center">
