@@ -119,6 +119,9 @@ infos = {
         "indices/csi-overseas-china-internet-usd",
         "USD",
     ),
+    "8839": Info("美国标普500指数期货", "indices/us-spx-500-futures", "USD"),
+    "8874": Info("纳斯达克100指数期货 ", "indices/nq-100-futures", "USD"),
+    "8826": Info("德国DAX指数期货", "indices/germany-30-futures", "EUR"),
 }
 
 

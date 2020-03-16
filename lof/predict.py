@@ -99,6 +99,11 @@ def estimate_table(start, end, *cols):
 
 
 def get_newest_netvalue(code):
+    """
+
+    :param code: six digits string for fund.
+    :return: netvalue, %Y-%m-%d
+    """
     code = code[1:]
     r = xa.universal.rget(f"http://fund.eastmoney.com/{code}.html")
     s = BeautifulSoup(r.text, "lxml")
@@ -115,7 +120,7 @@ def get_newest_netvalue(code):
 def get_qdii_tt(code, hdict, date=None):
     # predict d-1 netvalue of qdii funds
     try:
-        if date is None:
+        if date is None:  # 此时预测上个交易日净值
             tz_bj = dt.timezone(dt.timedelta(hours=8))
             today = (
                 dt.datetime.now(tz=tz_bj)
@@ -126,13 +131,13 @@ def get_qdii_tt(code, hdict, date=None):
             yesterday_str = yesterday.strftime("%Y%m%d")
             last_value, last_date = get_newest_netvalue("F" + code[2:])
             last_date_obj = dt.datetime.strptime(last_date, "%Y-%m-%d")
-            if last_date_obj < last_onday(yesterday):  # 前天数据还没更新
+            if last_date_obj < last_onday(yesterday):  # 前天净值数据还没更新
                 raise DateMismatch(
                     code,
                     reason="%s netvalue has not been updated to the day before yesterday"
                     % code,
                 )
-            elif last_date_obj > last_onday(yesterday):  # 昨天数据已出，不需要在预测了
+            elif last_date_obj > last_onday(yesterday):  # 昨天数据已出，不需要再预测了
                 print(
                     "no need to predict t-1 value since it has been out for %s"
                     % code
@@ -142,6 +147,7 @@ def get_qdii_tt(code, hdict, date=None):
             yesterday_str = date.replace("-", "").replace("/", "")
             fund_price = get_daily("F" + code[2:])
             fund_last = fund_price[fund_price["date"] < date].iloc[-1]
+            # 注意实时更新应用 date=None 传入，否则此处无法保证此数据是前天的而不是大前天的
             last_value = fund_last["close"]
             last_date = fund_last["date"].strftime("%Y-%m-%d")
 
@@ -179,14 +185,14 @@ def get_nonqdii_t(code, tdict, date=None):
     if not date:  # 今日实时净值
         last_value, last_date = get_newest_netvalue("F" + code[2:])
         tz_bj = dt.timezone(dt.timedelta(hours=8))
-        today = dt.datetime.now(tz=tz_bj)
+        today = dt.datetime.now(tz=tz_bj).replace(tzinfo=None)
+        today_str = today.strftime("%Y-%m-%d")
         yesterday = last_onday(today)
         yesterday_str = yesterday.strftime("%Y-%m-%d")
         last_value, last_date = get_newest_netvalue("F" + code[2:])
         if last_date != yesterday_str:
             raise DateMismatch(
-                "%s netvalue has not been updated to the day before yesterday"
-                % code
+                code, "%s netvalue has not been updated to yesterday" % code
             )
         t = 0
         r = 100
@@ -195,14 +201,24 @@ def get_nonqdii_t(code, tdict, date=None):
                 url = infos[k].url
             else:
                 url = k
-            print(url)
             aim_current = xa.get_rt(url)
             delta1 = aim_current["percent"] / 100
             currency = aim_current["currency"]
+            ## 关于当日货币换算的部分，1. 当日中间价涨幅 2. 当日汇率市价实时涨幅 3.1+2 哪个更合适待研究
             if currency == "JPY":
-                delta2 = xa.get_rt("currencies/jpy-cny")["percent"] / 100
+                delta2 = daily_increment(
+                    "100JPY/CNY", today_str, yesterday_str, _check=today_str
+                )
+                # delta2 = xa.get_rt("currencies/jpy-cny")["percent"] / 100
             elif currency == "USD":
-                delta2 = xa.get_rt("currencies/usd-cny")["percent"] / 100
+                delta2 = daily_increment(
+                    "USD/CNY", today_str, yesterday_str, _check=today_str
+                )
+                # delta2 = xa.get_rt("currencies/usd-cny")["percent"] / 100
+            elif currency == "EUR":
+                delta2 = daily_increment(
+                    "EUR/CNY", today_str, yesterday_str, _check=today_str
+                )
             elif currency == "CNY":
                 delta2 = 0
             else:
@@ -211,7 +227,7 @@ def get_nonqdii_t(code, tdict, date=None):
                 )
 
             r -= v
-            t += v * (1 + delta1) * (1 + delta2) / 100
+            t += v * (1 + delta1) * delta2 / 100
 
         t += r / 100
         return last_value * t
