@@ -1,6 +1,8 @@
 import xalpha as xa
 import datetime as dt
 
+tz_bj = dt.timezone(dt.timedelta(hours=8))
+
 
 def is_cn_trading(dtobj=None):
     tz_bj = dt.timezone(dt.timedelta(hours=8))

@@ -6,8 +6,8 @@ import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
 
-from .holdings import infos
-from .utils import month_ago, last_onday
+from .holdings import infos, future_now
+from .utils import month_ago, last_onday, tz_bj
 from .exceptions import DateMismatch, NonAccurate
 
 
@@ -121,7 +121,6 @@ def get_qdii_tt(code, hdict, date=None):
     # predict d-1 netvalue of qdii funds
     try:
         if date is None:  # 此时预测上个交易日净值
-            tz_bj = dt.timezone(dt.timedelta(hours=8))
             today = (
                 dt.datetime.now(tz=tz_bj)
                 .replace(tzinfo=None)
@@ -162,19 +161,29 @@ def get_qdii_tt(code, hdict, date=None):
     return net
 
 
-def get_qdii_t(
-    code, ttdict, tdict,
-):
+def get_qdii_t(code, ttdict, tdict, percent=False):
     # predict realtime netvalue for d day, only possible for oil related lof
     nettt = get_qdii_tt(code, ttdict)
     t = 0
     n = 0
-    today_str = dt.datetime.now().strftime("%Y%m%d")
+    today_str = dt.datetime.now(tz=tz_bj).strftime("%Y%m%d")
     for k, v in tdict.items():
         t += v
-        r = xa.get_rt(k)
-        c = v / 100 * (1 + r["percent"] / 100)
-        c = c * daily_increment(r["currency"] + "/CNY", today_str)
+        if infos.get(k):
+            url = infos[k].url
+        else:
+            url = k
+        r = xa.get_rt(url)
+        if percent or (not percent and not future_now.get(k)):
+            c = v / 100 * (1 + r["percent"] / 100)
+        else:
+            print("use close to compare instead of directly percent for %s" % k)
+            last_line = get_daily(future_now[k]).iloc[
+                -1
+            ]  # TODO: check it is indeed date of last_on(today)
+            c = v / 100 * r["current"] / last_line["close"]
+        if r.get("currency") and r.get("currency") != "CNY":
+            c = c * daily_increment(r["currency"] + "/CNY", today_str)
         n += c
     n += (100 - t) / 100
     nett = n * nettt
@@ -184,7 +193,6 @@ def get_qdii_t(
 def get_nonqdii_t(code, tdict, date=None):
     if not date:  # 今日实时净值
         last_value, last_date = get_newest_netvalue("F" + code[2:])
-        tz_bj = dt.timezone(dt.timedelta(hours=8))
         today = dt.datetime.now(tz=tz_bj).replace(tzinfo=None)
         today_str = today.strftime("%Y-%m-%d")
         yesterday = last_onday(today)

@@ -125,6 +125,8 @@ infos = {
 }
 
 
+future_now = {"8839": "166", "8874": "20", "8826": "172"}
+
 holdings = {}
 
 # 南方原油
@@ -233,6 +235,11 @@ holdings_164906_19s4 = {"954018": 95}
 
 # couldn't find 互联网50 for 中概互联 at investing.com
 
+holdings["oil_rt"] = {
+    "commodities/brent-oil": 40 * 0.9,
+    "commodities/crude-oil": 60 * 0.9,
+}
+
 holdings["501018"] = holdings_501018_19s4
 holdings["160216"] = holdings_160216_19s4
 holdings["162411"] = holdings_162411_19s4
@@ -241,15 +248,13 @@ holdings["160723"] = holdings_160723_19s4
 holdings["162719"] = holdings_162719_19s4
 
 holdings["513030"] = holdings_513030_19s4
+holdings["513030rt"] = {"8826": 95}
 holdings["513500"] = holdings_513500_19s4
+holdings["513500rt"] = {"8839": 99}
 holdings["161130"] = holdings_161130_19s4
+holdings["161130rt"] = {"8874": 94}
 
 holdings["513880"] = holdings_513880_19s4
 holdings["513520"] = holdings_513880_19s4
 holdings["513000"] = holdings_513880_19s4
 holdings["164906"] = holdings_164906_19s4
-
-holdings["oil_rt"] = {
-    "commodities/brent-oil": 40 * 0.9,
-    "commodities/crude-oil": 60 * 0.9,
-}

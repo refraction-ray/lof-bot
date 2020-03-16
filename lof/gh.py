@@ -6,7 +6,7 @@ from jinja2 import Environment, PackageLoader
 from .predict import get_qdii_tt, get_qdii_t, get_newest_netvalue, get_nonqdii_t
 from .holdings import holdings
 from .exceptions import NonAccurate
-from .utils import next_onday, last_onday
+from .utils import next_onday, last_onday, tz_bj
 
 
 def render(text, code=None):
@@ -26,23 +26,23 @@ def render(text, code=None):
 
 def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
     print(otext)
-    tzbj = dt.timezone(dt.timedelta(hours=8))
     dtstr = otext.split(":")[1].split(";")[0]
     dtobj = dt.datetime.strptime(dtstr, "%Y-%m-%d-%H-%M")
-    now = dt.datetime.now(tz=tzbj)
+    now = dt.datetime.now(tz=tz_bj)
     now = now.replace(tzinfo=None)
     if now >= dtobj:
         v = otext.split(">")[0].split(";")[1].split("-")[-3]
         vdtstr = otext.split(";")[1][:10]  # -
         if not est_holdings:
             est_holdings = holdings[code[2:]]
-        tz_bj = dt.timezone(dt.timedelta(hours=8))
         today = now.strftime("%Y-%m-%d")
         if v == "value1":
-            if not rt_holdings:
-                rt_holdings = holdings["oil_rt"]
+            if not rt_holdings and not holdings.get(code[2:] + "rt"):
+                rt_holdings = holdings["oil_rt"]  # 默认石油基金预测
+            elif not rt_holdings:
+                rt_holdings = holdings[code[2:] + "rt"]
             # 实时净值
-            if today == vdtstr:
+            if today == vdtstr and now.hour < 18:  # 晚于下午6点就不再更新实时净值（暂定）
                 try:
                     _, ntext = get_qdii_t(code, est_holdings, rt_holdings)
                     ntext = str(round(ntext, 3))
@@ -135,7 +135,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
             ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-3crt--><!--end-->
 <tr>
 <td style='text-align:center;' >{dtobj.strftime("%Y-%m-%d")}</td>
-<td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(hours=2)).strftime(
+<td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(hours=1, minutes=30)).strftime(
         "%Y-%m-%d-%H-%M"
     )};{dtobj.strftime("%Y-%m-%d")}-value4-->&nbsp;<!--end--></td>
 <td style='text-align:center;' ><!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
