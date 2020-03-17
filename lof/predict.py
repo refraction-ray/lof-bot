@@ -5,6 +5,7 @@ from xalpha.universal import cached
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
+from functools import wraps
 
 from .holdings import infos, future_now
 from .utils import month_ago, last_onday, tz_bj
@@ -117,49 +118,61 @@ def get_newest_netvalue(code):
     )
 
 
+def error_catcher(f):
+    @wraps(f)
+    def wrapper(*args, **kws):
+        try:
+            return f(*args, **kws)
+        except DateMismatch as e:
+            code = args[0]
+            error_msg = e.reason
+            error_msg += ", therefore %s cannot predict correctly" % code
+            raise NonAccurate(code=code, reason=error_msg)
+
+    return wrapper
+
+
+@error_catcher
 def get_qdii_tt(code, hdict, date=None):
     # predict d-1 netvalue of qdii funds
-    try:
-        if date is None:  # 此时预测上个交易日净值
-            today = (
-                dt.datetime.now(tz=tz_bj)
-                .replace(tzinfo=None)
-                .replace(hour=0, minute=0, second=0, microsecond=0)
-            )
-            yesterday = last_onday(today)
-            yesterday_str = yesterday.strftime("%Y%m%d")
-            last_value, last_date = get_newest_netvalue("F" + code[2:])
-            last_date_obj = dt.datetime.strptime(last_date, "%Y-%m-%d")
-            if last_date_obj < last_onday(yesterday):  # 前天净值数据还没更新
-                raise DateMismatch(
-                    code,
-                    reason="%s netvalue has not been updated to the day before yesterday"
-                    % code,
-                )
-            elif last_date_obj > last_onday(yesterday):  # 昨天数据已出，不需要再预测了
-                print(
-                    "no need to predict t-1 value since it has been out for %s"
-                    % code
-                )
-                return last_value
-        else:
-            yesterday_str = date.replace("-", "").replace("/", "")
-            fund_price = get_daily("F" + code[2:])
-            fund_last = fund_price[fund_price["date"] < date].iloc[-1]
-            # 注意实时更新应用 date=None 传入，否则此处无法保证此数据是前天的而不是大前天的
-            last_value = fund_last["close"]
-            last_date = fund_last["date"].strftime("%Y-%m-%d")
-        net = last_value * (
-            1
-            + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
+
+    if date is None:  # 此时预测上个交易日净值
+        today = (
+            dt.datetime.now(tz=tz_bj)
+            .replace(tzinfo=None)
+            .replace(hour=0, minute=0, second=0, microsecond=0)
         )
-    except DateMismatch as e:
-        error_msg = e.reason
-        error_msg += ", therefore %s cannot predict correctly" % code
-        raise NonAccurate(code=code, reason=error_msg)
+        yesterday = last_onday(today)
+        yesterday_str = yesterday.strftime("%Y%m%d")
+        last_value, last_date = get_newest_netvalue("F" + code[2:])
+        last_date_obj = dt.datetime.strptime(last_date, "%Y-%m-%d")
+        if last_date_obj < last_onday(yesterday):  # 前天净值数据还没更新
+            raise DateMismatch(
+                code,
+                reason="%s netvalue has not been updated to the day before yesterday"
+                % code,
+            )
+        elif last_date_obj > last_onday(yesterday):  # 昨天数据已出，不需要再预测了
+            print(
+                "no need to predict t-1 value since it has been out for %s"
+                % code
+            )
+            return last_value
+    else:
+        yesterday_str = date.replace("-", "").replace("/", "")
+        fund_price = get_daily("F" + code[2:])
+        fund_last = fund_price[fund_price["date"] < date].iloc[-1]
+        # 注意实时更新应用 date=None 传入，否则此处无法保证此数据是前天的而不是大前天的
+        last_value = fund_last["close"]
+        last_date = fund_last["date"].strftime("%Y-%m-%d")
+    net = last_value * (
+        1 + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
+    )
+
     return net
 
 
+@error_catcher
 def get_qdii_t(code, ttdict, tdict, percent=False):
     # predict realtime netvalue for d day, only possible for oil related lof
     nettt = get_qdii_tt(code, ttdict)
@@ -190,6 +203,7 @@ def get_qdii_t(code, ttdict, tdict, percent=False):
     return nettt, nett
 
 
+@error_catcher
 def get_nonqdii_t(code, tdict, date=None):
     if not date:  # 今日实时净值
         last_value, last_date = get_newest_netvalue("F" + code[2:])
@@ -215,17 +229,17 @@ def get_nonqdii_t(code, tdict, date=None):
             ## 关于当日货币换算的部分，1. 当日中间价涨幅 2. 当日汇率市价实时涨幅 3.1+2 哪个更合适待研究
             if currency == "JPY":
                 delta2 = daily_increment(
-                    "100JPY/CNY", today_str, yesterday_str, _check=today_str
+                    "100JPY/CNY", today_str, yesterday_str, _check=yesterday_str
                 )
                 # delta2 = xa.get_rt("currencies/jpy-cny")["percent"] / 100
             elif currency == "USD":
                 delta2 = daily_increment(
-                    "USD/CNY", today_str, yesterday_str, _check=today_str
+                    "USD/CNY", today_str, yesterday_str, _check=yesterday_str
                 )
                 # delta2 = xa.get_rt("currencies/usd-cny")["percent"] / 100
             elif currency == "EUR":
                 delta2 = daily_increment(
-                    "EUR/CNY", today_str, yesterday_str, _check=today_str
+                    "EUR/CNY", today_str, yesterday_str, _check=yesterday_str
                 )
             elif currency == "CNY":
                 delta2 = 0
