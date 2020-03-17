@@ -24,3 +24,4 @@ if __name__ == "__main__":
     render_github("SH513880", "SH513520", "SH513000", cols="3crt")
     ## extras
     render_github("SZ162411", refresh=True)
+    render_github("SZ164906", refresh=True)
