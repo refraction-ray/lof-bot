@@ -9,7 +9,18 @@ from lof.examples import render_github
 
 
 if __name__ == "__main__":
-    render_github("SH501018", "SZ160216", "SZ162411", "SZ160723", "SZ161129")
-    render_github("SH513030", "SH513500", "SZ161130", refresh=True)
+    render_github(
+        "SH501018",
+        "SZ160216",
+        "SZ162411",
+        "SZ160723",
+        "SZ161129",
+        "SZ162719",
+        "SH513030",
+        "SH513500",
+        "SZ161130",
+    )
     render_github("SZ164906", cols="3c")
     render_github("SH513880", "SH513520", "SH513000", cols="3crt")
+    ## extras
+    render_github("SZ162411", refresh=True)

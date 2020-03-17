@@ -35,11 +35,11 @@ def daily_increment(code, date, lastday=None, _check=None):
     tds = get_daily(code=code, end=date, prev=20)
     tds = tds[tds["date"] <= date]
     if _check:
-        if tds.iloc[-1]["date"] < dt.datetime.strptime(
+        if tds.iloc[-1]["date"] <= dt.datetime.strptime(
             _check, "%Y-%m-%d"
         ):  # in case data is not up to date
             raise DateMismatch(
-                code, reason="%s has no data upto %s" % (code, _check)
+                code, reason="%s has no data newer than %s" % (code, _check)
             )
     if not lastday:
         ratio = tds.iloc[-1]["close"] / tds.iloc[-2]["close"]
@@ -149,7 +149,6 @@ def get_qdii_tt(code, hdict, date=None):
             # 注意实时更新应用 date=None 传入，否则此处无法保证此数据是前天的而不是大前天的
             last_value = fund_last["close"]
             last_date = fund_last["date"].strftime("%Y-%m-%d")
-
         net = last_value * (
             1
             + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
@@ -178,7 +177,8 @@ def get_qdii_t(code, ttdict, tdict, percent=False):
             c = v / 100 * (1 + r["percent"] / 100)
         else:
             print("use close to compare instead of directly percent for %s" % k)
-            last_line = get_daily(future_now[k]).iloc[
+            funddf = get_daily(future_now[k])
+            last_line = funddf[funddf["date"] < today_str].iloc[
                 -1
             ]  # TODO: check it is indeed date of last_on(today)
             c = v / 100 * r["current"] / last_line["close"]

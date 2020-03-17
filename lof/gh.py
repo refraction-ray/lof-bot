@@ -58,7 +58,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                     print(e.reason)
                     ntext = otext
             else:
-                # 新的一天
+                # 新的一天，不再预测实时
                 ntext = otext.split(">")[1].split("<")[0]
         elif v == "value2":
             try:
