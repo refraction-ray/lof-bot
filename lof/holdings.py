@@ -122,6 +122,11 @@ infos = {
     "8839": Info("美国标普500指数期货", "indices/us-spx-500-futures", "USD"),
     "8874": Info("纳斯达克100指数期货 ", "indices/nq-100-futures", "USD"),
     "8826": Info("德国DAX指数期货", "indices/germany-30-futures", "EUR"),
+    "27": Info("英国富时100指数 (FTSE)", "indices/uk-100", "GBP"),
+    "8838": Info("英国富时100指数期货", "indices/uk-100-futures", "GBP"),
+    ".SPHCMSHP": Info("标普香港上市中国中小盘指数", ".SPHCMSHP", "USD"),
+    "CSIH11136": Info("中国互联网", "CSIH11136", "CNY"),
+    ".SPSIOP": Info("标普石油天然气上游股票指数", ".SPSIOP", "USD"),
 }
 
 
@@ -176,7 +181,7 @@ holdings_160216_19s4 = {
 }
 
 # 华宝油气直接按持仓跟踪指数模拟，实际其直接持仓成分股
-holdings_162411_19s4 = {"1010825": 91}
+holdings_162411_19s4 = {".SPSIOP": 91}  # 1010825
 
 # 华安标普全球石油指数
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001201374395365_1.pdf
@@ -231,9 +236,15 @@ holdings_513880_19s4 = {"178": 95}
 holdings_161130_19s4 = {"20": 94}
 
 # 交银中国互联
-holdings_164906_19s4 = {"954018": 95}
+holdings_164906_19s4 = {"CSIH11136": 95}  # 954018
 
 # couldn't find 互联网50 for 中概互联 at investing.com
+
+# 建信富时100
+holdings_539003_19s4 = {"27": 95}  # 跟踪非常不准
+
+# 华宝中小
+holdings_501021_19s4 = {".SPHCMSHP": 92}
 
 holdings["oil_rt"] = {
     "commodities/brent-oil": 40 * 0.9,
@@ -258,3 +269,6 @@ holdings["513880"] = holdings_513880_19s4
 holdings["513520"] = holdings_513880_19s4
 holdings["513000"] = holdings_513880_19s4
 holdings["164906"] = holdings_164906_19s4
+holdings["501021"] = holdings_501021_19s4
+
+# 雪球和英为都没找到的金融产品合集：标普全球石油指数，中证中国互联网50

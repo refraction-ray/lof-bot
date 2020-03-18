@@ -21,7 +21,8 @@ if __name__ == "__main__":
         "SZ161130",
     )
     render_github("SZ164906", cols="3c")
-    render_github("SH513880", "SH513520", "SH513000", cols="3crt")
+    render_github("SH513880", "SH513520", "SH513000", "SH501021", cols="3crt")
     ## extras
     render_github("SZ162411", refresh=True)
-    render_github("SZ164906", refresh=True)
+    render_github("SZ164906", cols="3c", refresh=True)
+    render_github("SH501021", refresh=True, cols="3crt")
