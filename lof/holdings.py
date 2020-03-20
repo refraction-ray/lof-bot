@@ -127,6 +127,31 @@ infos = {
     ".SPHCMSHP": Info("标普香港上市中国中小盘指数", ".SPHCMSHP", "USD"),
     "CSIH11136": Info("中国互联网", "CSIH11136", "CNY"),
     ".SPSIOP": Info("标普石油天然气上游股票指数", ".SPSIOP", "USD"),
+    "40657": Info(
+        "Energy Select Sector SPDR® Fund (XLE)",
+        "etfs/spdr-energy-select-sector-fund",
+        "USD",
+    ),
+    "520": Info(
+        "iShares Global Energy ETF (IXC)",
+        "etfs/ishares-s-p-global-energy",
+        "USD",
+    ),
+    "40673": Info(
+        "iShares U.S. Energy ETF (IYE)",
+        "etfs/ishares-dj-us-energy-sector-fund",
+        "USD",
+    ),
+    "45405": Info(
+        "Vanguard Energy Index Fund ETF Shares (VDE)",
+        "etfs/vanguard-energy",
+        "USD",
+    ),
+    "45707": Info("ETFS Natural Gas (NGAS)", "etfs/etfs-natural-gas", "USD"),
+    "962670": Info("标普500指数能源板块 (SPNY)", "indices/s-p-500-energy", "USD"),
+    "996734": Info(
+        "Silver Futures - (SAGc1)", "commodities/silver?cid=996734", "CNY"
+    ),  # 上海期货交易所白银期货
 }
 
 
@@ -220,6 +245,21 @@ holdings_160723_bc_cash = {"8849": 93.55}
 # reference: 广发道琼斯美国石油开发与生产指数
 holdings_162719_19s4 = {"954528": 88.81}
 
+# 诺安油气
+# 季报里写上基金全称不麻烦吧。。。
+holdings_163208_19s4 = {
+    "38284": 17.78,
+    "40657": 15.96,
+    "520": 15.88,
+    "40673": 15.46,
+    "45405": 14.55,
+    "44634": 6.36,
+    "44794": 4.38,
+    "45707": 1.41,
+}
+
+holdings_163208_bc = {"962670": 90}
+
 # 华安德国
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001211374413094_1.pdf
 # http://pdf.dfcfw.com/pdf/H2_AN202001201374397836_1.pdf 华安联接现在有个超级大户。。。
@@ -257,6 +297,7 @@ holdings["162411"] = holdings_162411_19s4
 holdings["161129"] = holdings_161129_19s4
 holdings["160723"] = holdings_160723_19s4
 holdings["162719"] = holdings_162719_19s4
+holdings["163208"] = holdings_163208_19s4
 
 holdings["513030"] = holdings_513030_19s4
 holdings["513030rt"] = {"8826": 95}

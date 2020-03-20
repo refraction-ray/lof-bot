@@ -18,6 +18,7 @@ LOF-BOT
 * [华宝油气](/lof-bot/SZ162411.html) (162411)
 * [国泰商品](/lof-bot/SZ160216.html) (160216)
 * [嘉实原油](/lof-bot/SZ160723.html) (160723)
+* [诺安油气](/lof-bot/SZ163208.html) (163208)
 * [易方达原油](/lof-bot/SZ161129.html) (161129)
 * [广发道琼斯石油](/lof-bot/SZ162719.html) (162719)
 
@@ -43,7 +44,7 @@ More funds are coming soon.
 <a href="https://github.com/refraction-ray/lof-bot/actions"><img alt="Actions Status" src="https://github.com/refraction-ray/lof-bot/workflows/pb/badge.svg"></a>
 </p>
 
-场内跟踪基金溢价阈值超过一定限度，自动通过 pushbullet 通知。如果你也想获取该提醒通知功能，请 fork 该项目，并且在 forked 项目 setting 中添加自己 pushbullet 的 token 作为 ``PB_TOKEN`` 即可。
+场内跟踪基金溢价阈值超过一定限度，自动通过 pushbullet 通知。如果你也想获取该提醒通知功能，请 fork 该项目，并且在 forked 项目 setting 中 secrets 添加自己 pushbullet 的 token 作为 ``PB_TOKEN`` 即可。
 
 ## 基金相关研究
 
