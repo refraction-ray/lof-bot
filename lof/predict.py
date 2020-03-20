@@ -333,44 +333,46 @@ def analyse_all(cpdf, col, reference="real"):
     analyse_ud(cpdf, reference, col)
 
 
-def compare(*codes, start="20200101", end=xa.cons.yesterday(), v=False):
-    """
+class Compare:
+    def __init__(self, *codes, start="20200101", end=xa.cons.yesterday()):
+        """
 
-    :param codes:
-    :param start: %Y%m%d
-    :param end: %Y%m%d
-    :param v: bool. Default False. True show plot instead of DataFrame.
-    :return:
-    """
-
-    totdf = pd.DataFrame()
-    codelist = []
-    for c in codes:
-        if isinstance(c, tuple):
-            code = c[0]
-            currency = c[1]
-        else:
-            code = c
-            if infos.get(c):
-                currency = infos[c].currency
+        :param codes:
+        :param start: %Y%m%d
+        :param end: %Y%m%d, default yesterday
+        """
+        totdf = pd.DataFrame()
+        codelist = []
+        for c in codes:
+            if isinstance(c, tuple):
+                code = c[0]
+                currency = c[1]
             else:
-                currency = "CNY"
-        codelist.append(code)
-        df = get_daily(code, start=start, end=end)
-        df = df[df.date.isin(xa.cons.opendate)]
-        if currency != "CNY":
-            cdf = get_daily(currency + "/CNY", start=start, end=end)
-            cdf = cdf[cdf["date"].isin(xa.cons.opendate)]
-            df = df.merge(right=cdf, on="date", suffixes=("_x", "_y"))
-            df["close"] = df["close_x"] * df["close_y"]
-        df[code] = df["close"] / df.iloc[0].close
-        df = df.reset_index()
-        df = df[["date", code]]
-        if "date" not in totdf.columns:
-            totdf = df
-        else:
-            totdf = totdf.merge(on="date", right=df)
-    if not v:
-        return totdf
-    else:
-        return totdf.plot(x="date", y=codelist)
+                code = c
+                if infos.get(c):
+                    currency = infos[c].currency
+                else:
+                    currency = "CNY"
+            codelist.append(code)
+            df = get_daily(code, start=start, end=end)
+            df = df[df.date.isin(xa.cons.opendate)]
+            if currency != "CNY":
+                cdf = get_daily(currency + "/CNY", start=start, end=end)
+                cdf = cdf[cdf["date"].isin(xa.cons.opendate)]
+                df = df.merge(right=cdf, on="date", suffixes=("_x", "_y"))
+                df["close"] = df["close_x"] * df["close_y"]
+            df[code] = df["close"] / df.iloc[0].close
+            df = df.reset_index()
+            df = df[["date", code]]
+            if "date" not in totdf.columns:
+                totdf = df
+            else:
+                totdf = totdf.merge(on="date", right=df)
+        self.totdf = totdf
+        self.codes = codelist
+
+    def v(self):
+        return self.totdf.plot(x="date", y=self.codes)
+
+    def corr(self):
+        return self.totdf.iloc[:, 1:].pct_change().corr()

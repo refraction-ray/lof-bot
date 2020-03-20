@@ -56,5 +56,6 @@ More funds are coming soon.
 亮点研究：
 
 * [不同 QDII 基金净值可预测性](https://nbviewer.jupyter.org/github/refraction-ray/lof-bot/blob/master/studies/qdii_lof_prediction.ipynb)
+* [不同 QDII 基金对基准的追踪情况和购买建议分析](https://nbviewer.jupyter.org/github/refraction-ray/lof-bot/blob/master/studies/compwithbenchmark.ipynb)
 
 Stay tuned for more.
