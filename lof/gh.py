@@ -44,9 +44,15 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
             # 实时净值
             if today == vdtstr and now.hour < 18:  # 晚于下午6点就不再更新实时净值（暂定）
                 try:
-                    _, ntext = get_qdii_t(code, est_holdings, rt_holdings)
-                    ntext = str(round(ntext, 3))
+                    _, rtvalue = get_qdii_t(code, est_holdings, rt_holdings)
+                    ntext = str(round(rtvalue, 3))
+                    now_value = xa.get_rt(code)["current"]
+                    prate = round((now_value / rtvalue - 1) * 100, 1)
                     ntext += f" ({now.strftime('%H:%M')})"
+                    if prate > 0:
+                        ntext += f'<p style="color: red;display: inline"> [{prate}%]</p>'
+                    else:
+                        ntext += f'<p style="color: green;display: inline"> [{prate}%]</p>'
                     ntext = (
                         otext.split(">")[0]
                         + ">"
