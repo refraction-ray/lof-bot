@@ -6,9 +6,10 @@ import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
 from functools import wraps
+from collections import deque
 
 from .holdings import infos, future_now
-from .utils import month_ago, last_onday, tz_bj
+from .utils import month_ago, last_onday, tz_bj, scale_dict
 from .exceptions import DateMismatch, NonAccurate
 
 
@@ -69,7 +70,7 @@ def evaluate_fluctuation(hdict, date, lastday=None, _check=None):
     return (price - 1) * 100
 
 
-def estimate_table(start, end, *cols):
+def estimate_table(start, end, *cols, float_holdings=False, **kws):
     """
 
     :param cols: Tuple[str, Dict]. (colname, holding_dict).
@@ -77,8 +78,18 @@ def estimate_table(start, end, *cols):
     compare_data = {
         "date": [],
     }
+    rtdict = {}
+    if kws.get("window"):
+        l = kws["window"]
+    else:
+        l = 4
+    if float_holdings:
+        fq = {}
     for col in cols:
         compare_data[col[0]] = []
+        rtdict[col[0]] = col[1].copy()  # not change holdings directly
+        if float_holdings:
+            fq[col[0]] = deque([1] * l, maxlen=l)
     dl = pd.Series(pd.date_range(start=start, end=end))
     dl = dl[dl.isin(xa.cons.opendate)]
     for i, d in enumerate(dl):
@@ -88,10 +99,55 @@ def estimate_table(start, end, *cols):
         dstr = d.strftime("%Y%m%d")
         lstdstr = dl.iloc[i - 1].strftime("%Y%m%d")
         compare_data["date"].append(d)
-        for col in cols:
-            compare_data[col[0]].append(
-                evaluate_fluctuation(col[1], dstr, lstdstr)
-            )
+        for i, col in enumerate(cols):
+            estf = evaluate_fluctuation(rtdict[col[0]], dstr, lstdstr)
+            if i == 0:
+                realf = estf
+            compare_data[col[0]].append(estf)
+            if float_holdings:
+                ratio = realf / estf
+                if i != 0 and ratio > 0:
+                    if ratio < 0.5:
+                        ratio = 0.625
+                    elif ratio < 0.75:
+                        ratio = 0.75 + 0.5 * (ratio - 0.75)
+                    elif ratio > 1.5:
+                        ratio = 1.375
+                    elif ratio > 1.25:
+                        ratio = 1.25 + 0.5 * (ratio - 1.25)
+                    if kws.get("smooth"):
+                        sm = kws["smooth"]
+                    else:
+                        sm = 0.2
+                    fq[col[0]].append(ratio ** sm)
+                elif i != 0 and ratio < 0:
+                    fq[col[0]].append(1)
+                # deviate = sum(fq[col[0]]) / 4
+                if i != 0:
+                    # if deviate > 1.04 or deviate < 0.96:
+                    #     std = np.std(fq[col[0]])
+                    #     if std < 0.25:
+                    #         deviate = deviate ** (0.3 - std)
+                    #         for _ in range(4):
+                    #             a = fq[col[0]].popleft()
+                    #             fq[col[0]].append(a / deviate)
+                    #     else:
+                    #         deviate = 1
+                    # else:
+                    #     deviate = 1
+                    if kws.get("decay"):
+                        q = kws["decay"]
+                    else:
+                        q = 0.65
+                    deviate = sum(
+                        [q ** i * fq[col[0]][i] for i in range(l)]
+                    ) / sum([q ** i for i in range(l)])
+                    for _ in range(l):
+                        a = fq[col[0]].popleft()
+                        fq[col[0]].append(a / deviate)
+                    rtdict[col[0]] = scale_dict(rtdict[col[0]], scale=deviate)
+                    if deviate != 1:
+                        print(dstr, sum([v for _, v in rtdict[col[0]].items()]))
     cpdf = pd.DataFrame(compare_data)
     col0 = cols[0]
     for col in cols[1:]:

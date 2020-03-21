@@ -43,3 +43,16 @@ def last_onday(dtobj):
     while dtobj.strftime("%Y-%m-%d") not in xa.cons.opendate:
         dtobj -= dt.timedelta(1)
     return dtobj
+
+
+def scale_dict(d, scale=1, ulimit=100, dlimit=50, aim=None):
+    t = sum([v for _, v in d.items()])
+    if t * scale > ulimit:
+        scale = ulimit / t
+    elif t * scale < dlimit:
+        scale = dlimit / t
+    if aim:
+        scale = aim / t
+    for k, v in d.items():
+        d[k] = v * scale
+    return d

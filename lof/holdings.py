@@ -1,4 +1,5 @@
 from collections import namedtuple
+from .utils import scale_dict
 
 # 南方原油持仓及基准
 # 38335 WisdomTree WTI Crude Oil
@@ -210,8 +211,9 @@ holdings_162411_19s4 = {".SPSIOP": 91}  # 1010825
 
 # 华安标普全球石油指数
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001201374395365_1.pdf
-holdings_160416_19s4 = {}
+holdings_160416_19s4 = {"520": 88}
 # couldn't find the benchmark index as investing.com: S&P Global Oil Index Net Total Return
+# 使用 IXC 代替
 
 # 易方达原油
 # reference http://pdf.dfcfw.com/pdf/H2_AN202001171374296729_1.pdf
@@ -293,6 +295,7 @@ holdings["oil_rt"] = {
 
 holdings["501018"] = holdings_501018_19s4
 holdings["160216"] = holdings_160216_19s4
+holdings["160416"] = holdings_160416_19s4
 holdings["162411"] = holdings_162411_19s4
 holdings["161129"] = holdings_161129_19s4
 holdings["160723"] = holdings_160723_19s4

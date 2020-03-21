@@ -14,7 +14,7 @@ def render(text, code=None):
     s = 0
     ls = [
         (m.start(0), m.end(0), text[m.start(0) : m.end(0)])
-        for m in re.finditer(r"<!--update[^>]*>[^<]*<!--end-->", text)
+        for m in re.finditer(r"<!--update[^>]*>[^!]*!--end-->", text)
     ]
     for l in ls:
         r += text[s : l[0]]
@@ -42,7 +42,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
             elif not rt_holdings:
                 rt_holdings = holdings[code[2:] + "rt"]
             # 实时净值
-            if today == vdtstr and now.hour < 18:  # 晚于下午6点就不再更新实时净值（暂定）
+            if today == vdtstr:
                 try:
                     _, rtvalue = get_qdii_t(code, est_holdings, rt_holdings)
                     ntext = str(round(rtvalue, 3))
@@ -65,7 +65,8 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                     ntext = otext
             else:
                 # 新的一天，不再预测实时
-                ntext = otext.split(">")[1].split("<")[0]
+                # ntext = otext.split(">")[1].split("<")[0]
+                ntext = "<".join(">".join(otext.split(">")[1:]).split("<")[:-1])
         elif v == "value2":
             try:
                 if last_onday(now).strftime("%Y-%m-%d") == vdtstr:

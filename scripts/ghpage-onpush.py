@@ -12,4 +12,4 @@ from ghpage import main
 if __name__ == "__main__":
     main()
     ## extras
-    # render_github("SZ162411", date="2020-03-16")
+    # render_github("SH501018")

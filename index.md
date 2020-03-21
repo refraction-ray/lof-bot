@@ -21,6 +21,7 @@ LOF-BOT
 * [诺安油气](/lof-bot/SZ163208.html) (163208)
 * [易方达原油](/lof-bot/SZ161129.html) (161129)
 * [广发道琼斯石油](/lof-bot/SZ162719.html) (162719)
+* [华安标普石油](/lof-bot/SZ160416.html) (160416)
 
 #### 其他 QDII 基金
 
@@ -55,7 +56,7 @@ More funds are coming soon.
 
 亮点研究：
 
-* [不同 QDII 基金净值可预测性](https://nbviewer.jupyter.org/github/refraction-ray/lof-bot/blob/master/studies/qdii_lof_prediction.ipynb)
-* [不同 QDII 基金对基准的追踪情况和购买建议分析](https://nbviewer.jupyter.org/github/refraction-ray/lof-bot/blob/master/studies/compwithbenchmark.ipynb)
+* [不同 QDII 基金净值可预测性](https://github.com/refraction-ray/lof-bot/blob/master/studies/qdii_lof_prediction.ipynb)
+* [不同 QDII 基金对基准的追踪情况和购买建议分析](https://github.com/refraction-ray/lof-bot/blob/master/studies/compwithbenchmark.ipynb)
 
 Stay tuned for more.
