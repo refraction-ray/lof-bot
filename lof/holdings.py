@@ -153,6 +153,16 @@ infos = {
     "996734": Info(
         "Silver Futures - (SAGc1)", "commodities/silver?cid=996734", "CNY"
     ),  # 上海期货交易所白银期货
+    "HK00700": Info("腾讯控股", "HK00700", "HKD"),
+    "BABA": Info("阿里巴巴", "BABA", "USD"),
+    "HK03690": Info("美团点评", "HK03690", "HKD"),
+    "BIDU": Info("百度", "BIDU", "USD"),
+    "JD": Info("京东", "JD", "USD"),
+    "TAL": Info("好未来", "TAL", "USD"),
+    "NTES": Info("网易", "NTES", "USD"),
+    "TCOM": Info("携程", "TCOM", "USD"),
+    "PDD": Info("拼多多", "PDD", "USD"),
+    "WUBA": Info("58同城", "WUBA", "USD"),
 }
 
 
@@ -281,6 +291,19 @@ holdings_161130_19s4 = {"20": 94}
 holdings_164906_19s4 = {"CSIH11136": 95}  # 954018
 
 # couldn't find 互联网50 for 中概互联 at investing.com
+# 易方达中概
+holdings_513050_19s4 = {
+    "HK00700": 31.15,
+    "BABA": 30.17,
+    "HK03690": 6.95,
+    "BIDU": 5.84,
+    "JD": 5.45,
+    "TAL": 3.28,
+    "NTES": 3.15,
+    "TCOM": 2.47,
+    "PDD": 2.33,
+    "WUBA": 0.99,
+}
 
 # 建信富时100
 holdings_539003_19s4 = {"27": 95}  # 跟踪非常不准
@@ -314,5 +337,6 @@ holdings["513520"] = holdings_513880_19s4
 holdings["513000"] = holdings_513880_19s4
 holdings["164906"] = holdings_164906_19s4
 holdings["501021"] = holdings_501021_19s4
+holdings["513050"] = holdings_513050_19s4
 
 # 雪球和英为都没找到的金融产品合集：标普全球石油指数，中证中国互联网50

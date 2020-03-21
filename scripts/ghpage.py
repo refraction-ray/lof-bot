@@ -22,7 +22,7 @@ def main():
         "SZ163208",
         "SZ160416",
     )
-    render_github("SZ164906", cols="3c")
+    render_github("SZ164906", "SH513050", cols="3c")
     render_github("SH513880", "SH513520", "SH513000", "SH501021", cols="3crt")
 
 
