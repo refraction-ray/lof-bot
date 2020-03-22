@@ -33,6 +33,22 @@ def set_cache_start(date=None):
 set_cache_start()
 
 
+def get_currency(code):
+    # only works for HKD JPY USD GBD CNY EUR
+    if code in infos:
+        return infos[code].currency
+
+    try:
+        currency = xa.get_rt(code)["currency"]
+        if currency is None:
+            currency = "CNY"
+        elif currency == "JPY":
+            currency = "100JPY"
+    except (TypeError, AttributeError, ValueError):
+        currency = "CNY"
+    return currency
+
+
 def daily_increment(code, date, lastday=None, _check=None):
     tds = get_daily(code=code, end=date, prev=20)
     tds = tds[tds["date"] <= date]
@@ -60,11 +76,9 @@ def evaluate_fluctuation(hdict, date, lastday=None, _check=None):
     for fundid, percent in hdict.items():
         ratio = daily_increment(fundid, date, lastday, _check)
         exchange = 1
-        if infos.get(fundid):
-            if infos[fundid].currency != "CNY":
-                exchange = daily_increment(
-                    infos[fundid].currency + "/CNY", date, lastday, _check
-                )
+        currency = get_currency(fundid)
+        if currency != "CNY":
+            exchange = daily_increment(currency + "/CNY", date, lastday, _check)
         price += ratio * percent / 100 * exchange
     price += remain / 100
     return (price - 1) * 100
@@ -79,10 +93,7 @@ def estimate_table(start, end, *cols, float_holdings=False, **kws):
         "date": [],
     }
     rtdict = {}
-    if kws.get("window"):
-        l = kws["window"]
-    else:
-        l = 4
+    l = kws.get("window", 4)
     if float_holdings:
         fq = {}
     for col in cols:
@@ -115,10 +126,7 @@ def estimate_table(start, end, *cols, float_holdings=False, **kws):
                         ratio = 1.375
                     elif ratio > 1.25:
                         ratio = 1.25 + 0.5 * (ratio - 1.25)
-                    if kws.get("smooth"):
-                        sm = kws["smooth"]
-                    else:
-                        sm = 0.2
+                    sm = kws.get("smooth", 0.2)
                     fq[col[0]].append(ratio ** sm)
                 elif i != 0 and ratio < 0:
                     fq[col[0]].append(1)
@@ -135,10 +143,7 @@ def estimate_table(start, end, *cols, float_holdings=False, **kws):
                     #         deviate = 1
                     # else:
                     #     deviate = 1
-                    if kws.get("decay"):
-                        q = kws["decay"]
-                    else:
-                        q = 0.65
+                    q = kws.get("decay", 0.65)
                     deviate = sum(
                         [q ** i * fq[col[0]][i] for i in range(l)]
                     ) / sum([q ** i for i in range(l)])
@@ -157,6 +162,7 @@ def estimate_table(start, end, *cols, float_holdings=False, **kws):
 
 def get_newest_netvalue(code):
     """
+    防止天天基金总量 API 最新净值更新不及时
 
     :param code: six digits string for fund.
     :return: netvalue, %Y-%m-%d
@@ -284,25 +290,16 @@ def get_nonqdii_t(code, tdict, date=None):
             currency = aim_current["currency"]
             ## 关于当日货币换算的部分，1. 当日中间价涨幅 2. 当日汇率市价实时涨幅 3.1+2 哪个更合适待研究
             if currency == "JPY":
+                currency = "100JPY"
+            if currency != "CNY":
                 delta2 = daily_increment(
-                    "100JPY/CNY", today_str, yesterday_str, _check=yesterday_str
+                    currency + "/CNY",
+                    today_str,
+                    yesterday_str,
+                    _check=yesterday_str,
                 )
-                # delta2 = xa.get_rt("currencies/jpy-cny")["percent"] / 100
-            elif currency == "USD":
-                delta2 = daily_increment(
-                    "USD/CNY", today_str, yesterday_str, _check=yesterday_str
-                )
-                # delta2 = xa.get_rt("currencies/usd-cny")["percent"] / 100
-            elif currency == "EUR":
-                delta2 = daily_increment(
-                    "EUR/CNY", today_str, yesterday_str, _check=yesterday_str
-                )
-            elif currency == "CNY":
-                delta2 = 0
             else:
-                raise NonAccurate(
-                    "%s transformation have not been implemented" % currency
-                )
+                delta2 = 1
 
             r -= v
             t += v * (1 + delta1) * delta2 / 100
@@ -405,10 +402,7 @@ class Compare:
                 currency = c[1]
             else:
                 code = c
-                if infos.get(c):
-                    currency = infos[c].currency
-                else:
-                    currency = "CNY"
+                currency = get_currency(code)
             codelist.append(code)
             df = get_daily(code, start=start, end=end)
             df = df[df.date.isin(xa.cons.opendate)]
