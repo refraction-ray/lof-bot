@@ -8,8 +8,8 @@ from bs4 import BeautifulSoup
 from functools import wraps
 from collections import deque
 
-from .holdings import infos, future_now
-from .utils import month_ago, last_onday, tz_bj, scale_dict
+from .holdings import infos, future_now, no_trading_days
+from .utils import month_ago, last_onday, tz_bj, scale_dict, next_onday
 from .exceptions import DateMismatch, NonAccurate
 
 
@@ -53,12 +53,18 @@ def daily_increment(code, date, lastday=None, _check=None):
     tds = get_daily(code=code, end=date, prev=20)
     tds = tds[tds["date"] <= date]
     if _check:
-        if tds.iloc[-1]["date"] <= dt.datetime.strptime(
-            _check, "%Y-%m-%d"
-        ):  # in case data is not up to date
-            raise DateMismatch(
-                code, reason="%s has no data newer than %s" % (code, _check)
-            )
+        _check_obj = dt.datetime.strptime(_check, "%Y-%m-%d")
+        if tds.iloc[-1]["date"] <= _check_obj:  # in case data is not up to date
+            # 但是存在日本市场休市时间不一致的情况，估计美股也存在
+            if next_onday(_check_obj).strftime(
+                "%Y-%m-%d"
+            ) in no_trading_days.get(get_currency(code), []):
+                # 注意有时计价货币无法和市场保持一致，暂时不处理，遇到再说
+                print("%s is closed that day" % code)
+            else:
+                raise DateMismatch(
+                    code, reason="%s has no data newer than %s" % (code, _check)
+                )
     if not lastday:
         ratio = tds.iloc[-1]["close"] / tds.iloc[-2]["close"]
     else:

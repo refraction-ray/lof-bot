@@ -280,6 +280,7 @@ holdings_513030_19s4 = {"172": 94.81}
 # 博时标普500
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001171374274630_1.pdf
 holdings_513500_19s4 = {"166": 99.5}  # 这一仓位经过调整，比较符合实际的预测
+holdings_161125_19s4 = {"166": 99}
 
 # 日经225
 holdings_513880_19s4 = {"178": 95}
@@ -329,6 +330,8 @@ holdings["513030"] = holdings_513030_19s4
 holdings["513030rt"] = {"8826": 95}
 holdings["513500"] = holdings_513500_19s4
 holdings["513500rt"] = {"8839": 99}
+holdings["161125"] = holdings_161125_19s4
+holdings["161125rt"] = {"8839": 99}
 holdings["161130"] = holdings_161130_19s4
 holdings["161130rt"] = {"8874": 94}
 
@@ -340,3 +343,7 @@ holdings["501021"] = holdings_501021_19s4
 holdings["513050"] = holdings_513050_19s4
 
 # 雪球和英为都没找到的金融产品合集：标普全球石油指数，中证中国互联网50
+
+no_trading_days = {"JPY": ["2020-03-20"]}
+
+no_trading_days["100JPY"] = no_trading_days["JPY"]
