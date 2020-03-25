@@ -26,6 +26,7 @@ def main():
         "SZ161125",
         "SH513100",
         "SZ165513",
+        "SZ161815",
     )
     render_github("SZ164906", "SH513050", cols="3c")
     render_github("SH513880", "SH513520", "SH513000", "SH501021", cols="3crt")

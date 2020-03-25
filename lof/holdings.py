@@ -200,6 +200,24 @@ infos = {
         "etfs/united-states-gasoline-fund-lp",
         "USD",
     ),
+    "9227": Info("SPDR® Gold Shares (GLD)", "etfs/spdr-gold-trust", "USD"),
+    "14178": Info(
+        "Invesco DB Commodity Index Tracking Fund (DBC)",
+        "etfs/powershares-db-commodity-index",
+        "USD",
+    ),
+    "959572": Info("安硕A50 (2823)", "etfs/ishares-ftse-a50-china", "HKD"),
+    "BB-FGERBIU:ID": Info(
+        "FGS - Backwardated Basket E-roll Commodities Trust",
+        "BB-FGERBIU:ID",
+        "USD",
+    ),
+    "BB-FLDIVBK:FP": Info(
+        "FSP - MS Diversified Backwardated Fund", "BB-FLDIVBK:FP", "CHF"
+    ),  # 瑞士法郎666
+    "1088675": Info(
+        "标普高盛商品指数 (SPGSCI)", "indices/s-p-goldman-sachs-commodity-index", "USD"
+    ),
 }
 
 
@@ -325,6 +343,22 @@ holdings_165513_19s4 = {
     "44901": 2.12,
 }
 
+# 银华通胀
+
+holdings_161815_19s4 = {
+    "9227": 17.75,
+    "14178": 13.87,
+    "44792": 12.52,
+    "44634": 11.85,
+    "959572": 11.33,
+    "BB-FLDIVBK:FP": 9.17,
+    "BB-FGERBIU:ID": 6.77,
+    "40684": 3.27,
+    "515": 2.68,
+}
+
+holdings_161815_bc = {"1088675": 70}
+
 # 华安德国
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001211374413094_1.pdf
 # http://pdf.dfcfw.com/pdf/H2_AN202001201374397836_1.pdf 华安联接现在有个超级大户。。。
@@ -382,6 +416,7 @@ holdings["160723"] = holdings_160723_19s4
 holdings["162719"] = holdings_162719_19s4
 holdings["163208"] = holdings_163208_19s4
 holdings["165513"] = holdings_165513_19s4
+holdings["161815"] = holdings_161815_bc
 
 holdings["513030"] = holdings_513030_19s4
 holdings["513030rt"] = {"8826": 95}
