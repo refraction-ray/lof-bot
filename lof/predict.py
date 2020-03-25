@@ -1,7 +1,6 @@
 import sys
 import xalpha as xa
 import datetime as dt
-from xalpha.universal import cached
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
@@ -13,28 +12,8 @@ from .utils import month_ago, last_onday, tz_bj, scale_dict, next_onday
 from .exceptions import DateMismatch, NonAccurate
 
 
-def set_cache_start(date=None):
-    """
-    If you realy have the idea of what you are doing, do it before any other imports,
-    otherwise ``get_daily`` cannot change the cache behavior.
-
-    :param date: str.
-    :return:
-    """
-    thismodule = sys.modules[__name__]
-    if not date:
-        date = getattr(thismodule, "cache_start", month_ago())
-    get_daily = cached(date)(xa.get_daily)
-    setattr(thismodule, "get_daily", get_daily)
-    setattr(thismodule, "cache_start", date)
-    xa.universal.reset_cache()
-
-
-set_cache_start()
-
-
 def get_currency(code):
-    # only works for HKD JPY USD GBD CNY EUR
+    # only works for HKD JPY USD GBP CNY EUR, not very general when data source gets diverse more
     if code in infos:
         return infos[code].currency
 
@@ -50,7 +29,7 @@ def get_currency(code):
 
 
 def daily_increment(code, date, lastday=None, _check=None):
-    tds = get_daily(code=code, end=date, prev=20)
+    tds = xa.get_daily(code=code, end=date, prev=20)
     tds = tds[tds["date"] <= date]
     if _check:
         _check_obj = dt.datetime.strptime(_check, "%Y-%m-%d")
@@ -118,6 +97,7 @@ def estimate_table(start, end, *cols, float_holdings=False, **kws):
         compare_data["date"].append(d)
         for i, col in enumerate(cols):
             estf = evaluate_fluctuation(rtdict[col[0]], dstr, lstdstr)
+            # print(estf)
             if i == 0:
                 realf = estf
             compare_data[col[0]].append(estf)
@@ -228,7 +208,7 @@ def get_qdii_tt(code, hdict, date=None):
             return last_value
     else:
         yesterday_str = date.replace("-", "").replace("/", "")
-        fund_price = get_daily("F" + code[2:])
+        fund_price = xa.get_daily("F" + code[2:])
         fund_last = fund_price[fund_price["date"] < date].iloc[-1]
         # 注意实时更新应用 date=None 传入，否则此处无法保证此数据是前天的而不是大前天的
         last_value = fund_last["close"]
@@ -258,7 +238,7 @@ def get_qdii_t(code, ttdict, tdict, percent=False):
             c = v / 100 * (1 + r["percent"] / 100)
         else:
             print("use close to compare instead of directly percent for %s" % k)
-            funddf = get_daily(future_now[k])
+            funddf = xa.get_daily(future_now[k])
             last_line = funddf[funddf["date"] < today_str].iloc[
                 -1
             ]  # TODO: check it is indeed date of last_on(today)
@@ -390,45 +370,3 @@ def analyse_all(cpdf, col, reference="real"):
     analyse_deviate(cpdf, col)
     analyse_percentile(cpdf, col)
     analyse_ud(cpdf, reference, col)
-
-
-class Compare:
-    def __init__(self, *codes, start="20200101", end=xa.cons.yesterday()):
-        """
-
-        :param codes:
-        :param start: %Y%m%d
-        :param end: %Y%m%d, default yesterday
-        """
-        totdf = pd.DataFrame()
-        codelist = []
-        for c in codes:
-            if isinstance(c, tuple):
-                code = c[0]
-                currency = c[1]
-            else:
-                code = c
-                currency = get_currency(code)
-            codelist.append(code)
-            df = get_daily(code, start=start, end=end)
-            df = df[df.date.isin(xa.cons.opendate)]
-            if currency != "CNY":
-                cdf = get_daily(currency + "/CNY", start=start, end=end)
-                cdf = cdf[cdf["date"].isin(xa.cons.opendate)]
-                df = df.merge(right=cdf, on="date", suffixes=("_x", "_y"))
-                df["close"] = df["close_x"] * df["close_y"]
-            df[code] = df["close"] / df.iloc[0].close
-            df = df.reset_index()
-            df = df[["date", code]]
-            if "date" not in totdf.columns:
-                totdf = df
-            else:
-                totdf = totdf.merge(on="date", right=df)
-        self.totdf = totdf
-        self.codes = codelist
-
-    def v(self):
-        return self.totdf.plot(x="date", y=self.codes)
-
-    def corr(self):
-        return self.totdf.iloc[:, 1:].pct_change().corr()

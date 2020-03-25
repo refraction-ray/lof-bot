@@ -163,6 +163,7 @@ infos = {
     "TCOM": Info("携程", "TCOM", "USD"),
     "PDD": Info("拼多多", "PDD", "USD"),
     "WUBA": Info("58同城", "WUBA", "USD"),
+    "SP5475707.2": Info("S&P Global Oil Index", "SP5475707.2", "USD"),
 }
 
 
@@ -221,9 +222,10 @@ holdings_162411_19s4 = {".SPSIOP": 91}  # 1010825
 
 # 华安标普全球石油指数
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001201374395365_1.pdf
-holdings_160416_19s4 = {"520": 88}
+holdings_160416_19s4_alt = {"520": 88}
 # couldn't find the benchmark index as investing.com: S&P Global Oil Index Net Total Return
 # 使用 IXC 代替
+holdings_160416_19s4 = {"SP5475707.2": 90}
 
 # 易方达原油
 # reference http://pdf.dfcfw.com/pdf/H2_AN202001171374296729_1.pdf
@@ -291,6 +293,9 @@ holdings_161130_19s4 = {"20": 94}
 # 交银中国互联
 holdings_164906_19s4 = {"CSIH11136": 95}  # 954018
 
+## 国泰纳斯达克
+holdings_513100_19s4 = {"20": 99}
+
 # couldn't find 互联网50 for 中概互联 at investing.com
 # 易方达中概
 holdings_513050_19s4 = {
@@ -334,6 +339,8 @@ holdings["161125"] = holdings_161125_19s4
 holdings["161125rt"] = {"8839": 99}
 holdings["161130"] = holdings_161130_19s4
 holdings["161130rt"] = {"8874": 94}
+holdings["513100"] = holdings_513100_19s4
+holdings["513100rt"] = {"8874": 99}
 
 holdings["513880"] = holdings_513880_19s4
 holdings["513520"] = holdings_513880_19s4
@@ -342,8 +349,9 @@ holdings["164906"] = holdings_164906_19s4
 holdings["501021"] = holdings_501021_19s4
 holdings["513050"] = holdings_513050_19s4
 
-# 雪球和英为都没找到的金融产品合集：标普全球石油指数，中证中国互联网50
+# 雪球和英为都没找到的金融产品合集：中证中国互联网50
 
+# 本着比国内多出的休市日，有一个记一个的 workaround
 no_trading_days = {"JPY": ["2020-03-20"]}
 
 no_trading_days["100JPY"] = no_trading_days["JPY"]

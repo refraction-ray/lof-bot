@@ -7,9 +7,12 @@ sys.path.insert(0, project_dir)
 sys.path.insert(0, here)
 
 from lof.examples import render_github
+import xalpha as xa
 from ghpage import main
+
 
 if __name__ == "__main__":
     main()
     ## extras
-    # render_github("SZ161129")
+    # xa.set_backend(backend="memory", precached="20200301")
+    # render_github("SH513100", refresh=True)

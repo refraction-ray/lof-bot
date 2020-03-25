@@ -4,7 +4,7 @@ import os
 import datetime as dt
 
 from .predict import get_qdii_t
-from .holdings import holdings
+from .holdings import holdings, infos
 from .notification import notify
 from .exceptions import NonAccurate
 from .gh import render_template, render
@@ -86,7 +86,10 @@ def render_github(
 
 
 def _new_render_github(code, tmpl, date, cols="4c"):
-    name = xa.get_rt(code)["name"]
+    if code in infos:
+        name = infos[code].name
+    else:
+        name = xa.get_rt(code)["name"]
     once = render_template(
         tmpl=tmpl, code=code, name=name, date=date, cols=cols
     )

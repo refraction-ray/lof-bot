@@ -8,3 +8,5 @@ See the webpage [here](https://re-ra.xyz/lof-bot) for live.
 Serverless auto notification is deployed thanks to fantastic GitHub action.
 
 Matured codebase in this repo could be included in xalpha project in the future.
+
+*This project is under active development and API may change rapidly*.

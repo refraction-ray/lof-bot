@@ -92,7 +92,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
             if date != vdtstr:
                 ntext = otext
             else:
-                ntext = str(value)
+                ntext = str(round(value, 4))
         elif v == "value4":  # non qdii 同日 qdii lof 的实时净值
             try:
                 if today == vdtstr:
