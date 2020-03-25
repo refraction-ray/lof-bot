@@ -164,6 +164,42 @@ infos = {
     "PDD": Info("拼多多", "PDD", "USD"),
     "WUBA": Info("58同城", "WUBA", "USD"),
     "SP5475707.2": Info("S&P Global Oil Index", "SP5475707.2", "USD"),
+    "959519": Info(
+        "iShares Commodities Select Strategy ETF (COMT)",
+        "etfs/ishares-commodities-strategy",
+        "USD",
+    ),
+    "959523": Info(
+        "Invesco Optimum Yield Diversified Commodity Strategy No K-1 ETF (PDBC)",
+        "etfs/powershares-db-optimum-yield-divers",
+        "USD",
+    ),
+    "515": Info(
+        "iShares S&P GSCI Commodity-Indexed Trust (GSG)",
+        "etfs/ishares-s-p-gsci-commod",
+        "USD",
+    ),
+    "40684": Info(
+        "Invesco DB Agriculture Fund (DBA)",
+        "etfs/powershares-db-agriculture-fund",
+        "USD",
+    ),
+    "44715": Info(
+        "Invesco DB Base Metals Fund (DBB)",
+        "etfs/powershares-db-base-metals-fund",
+        "USD",
+    ),
+    "1155647": Info(
+        "iPath® Series B Bloomberg Livestock Subindex Total Return (COW)",
+        "etfs/ipath-b-bloomberg-lvstk-subndx-tr",
+        "USD",
+    ),
+    # 这代码真的合适
+    "44901": Info(
+        "United States Gasoline Fund, LP (UGA)",
+        "etfs/united-states-gasoline-fund-lp",
+        "USD",
+    ),
 }
 
 
@@ -274,6 +310,21 @@ holdings_163208_19s4 = {
 
 holdings_163208_bc = {"962670": 90}
 
+# 信诚商品
+
+holdings_165513_19s4 = {
+    "959519": 18.39,
+    "959523": 15.1,
+    "515": 14.3,
+    "44634": 14.02,
+    "40684": 8.54,
+    "44715": 5.41,
+    "14218": 5.36,
+    "1155647": 3.79,
+    "44794": 2.97,
+    "44901": 2.12,
+}
+
 # 华安德国
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001211374413094_1.pdf
 # http://pdf.dfcfw.com/pdf/H2_AN202001201374397836_1.pdf 华安联接现在有个超级大户。。。
@@ -330,6 +381,7 @@ holdings["161129"] = holdings_161129_19s4
 holdings["160723"] = holdings_160723_19s4
 holdings["162719"] = holdings_162719_19s4
 holdings["163208"] = holdings_163208_19s4
+holdings["165513"] = holdings_165513_19s4
 
 holdings["513030"] = holdings_513030_19s4
 holdings["513030rt"] = {"8826": 95}
