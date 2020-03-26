@@ -146,6 +146,91 @@ def estimate_table(start, end, *cols, float_holdings=False, **kws):
     return cpdf
 
 
+def _smooth_pos(r, e, o):
+    """
+
+    :param r: 实际涨幅
+    :param e: 满仓估计涨幅
+    :param o: 昨日仓位估计
+    :return:
+    """
+    pos = r / e
+    if pos <= 0:
+        return o
+    if pos > 1:
+        pos = 1
+    elif pos < 0.5:
+        pos = pos ** 0.6
+
+    if abs(r) < 1:
+        pos = (pos + (3 - 3 * abs(r)) * o) / (4 - 3 * abs(r))
+
+    return pos
+
+
+def estimate_table_with_pos(start, end, *cols, **kws):
+    """
+
+    :param cols: Tuple[str, Dict]. (colname, holding_dict).
+    """
+    compare_data = {
+        "date": [],
+    }
+    rtdict = {}
+    fq = {}
+    l = kws.get("window", 3)
+    q = kws.get("decay", 0.8)
+    c = kws.get("pos", 0.95)
+    s = kws.get("smooth", _smooth_pos)
+    full_holdings = {}
+    for i, col in enumerate(cols):
+        full_holdings[col[0]] = scale_dict(col[1].copy(), aim=100)
+        compare_data[col[0]] = []
+        if i != 0:
+            compare_data[col[0] + "pos"] = []
+            compare_data[col[0] + "posld"] = []
+        fq[col[0]] = deque([c] * l, maxlen=l)
+    current_pos = c
+    dl = pd.Series(pd.date_range(start=start, end=end))
+    dl = dl[dl.isin(xa.cons.opendate)]
+    for j, d in enumerate(dl):
+        if j == 0:
+            continue
+
+        dstr = d.strftime("%Y%m%d")
+        lstdstr = dl.iloc[j - 1].strftime("%Y%m%d")
+        compare_data["date"].append(d)
+        for i, col in enumerate(cols):
+
+            fullestf = evaluate_fluctuation(
+                full_holdings[col[0]], dstr, lstdstr
+            )
+            if i != 0:
+                estf = fullestf * current_pos
+                compare_data[col[0]].append(estf)
+                compare_data[col[0] + "pos"].append(current_pos)
+                compare_data[col[0] + "posld"].append(fq[col[0]][-1])
+            # print(estf)
+            else:  # real col
+                realf = fullestf
+                compare_data[col[0]].append(realf)
+            if i != 0:  # estimate pos
+                pos = s(realf, fullestf, fq[col[0]][-1])
+                fq[col[0]].append(pos)
+
+                current_pos = sum(
+                    [q ** i * fq[col[0]][i] for i in range(l)]
+                ) / sum([q ** i for i in range(l)])
+                if current_pos > 1:
+                    current_pos = 1
+
+    cpdf = pd.DataFrame(compare_data)
+    col0 = cols[0]
+    for col in cols[1:]:
+        cpdf["diff_" + col0[0] + "_" + col[0]] = cpdf[col0[0]] - cpdf[col[0]]
+    return cpdf
+
+
 def get_newest_netvalue(code):
     """
     防止天天基金总量 API 最新净值更新不及时
