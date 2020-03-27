@@ -54,7 +54,9 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
             # 实时净值
             if today == vdtstr:
                 try:
-                    _, rtvalue = get_qdii_t(code, est_holdings, rt_holdings)
+                    _, rtvalue = get_qdii_t(
+                        code, est_holdings, rt_holdings, positions=is_floating
+                    )
                     ntext = str(round(rtvalue, 3))
                     now_value = xa.get_rt(code)["current"]
                     prate = round((now_value / rtvalue - 1) * 100, 1)

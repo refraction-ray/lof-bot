@@ -312,7 +312,7 @@ tt_cache = {}
 
 
 @error_catcher
-def get_qdii_tt(code, hdict, date=None, positions=True):
+def get_qdii_tt(code, hdict, date=None, positions=True, usecache=True):
     # predict d-1 netvalue of qdii funds
     if date is None:
         today = (
@@ -324,14 +324,16 @@ def get_qdii_tt(code, hdict, date=None, positions=True):
         datekey = yesterday.strftime("%Y%m%d")
     else:
         datekey = date.replace("/", "").replace("-", "")
-
     key = code + datekey
-    if key in tt_cache:
-        return tt_cache[key]
+    if usecache:
+        if key in tt_cache:
+            return tt_cache[key]
     if positions:
 
         current_pos = position_predict(code, hdict, datekey)
         hdict = scale_dict(hdict.copy(), aim=current_pos * 100)
+        print(current_pos)
+    print(sum([v for _, v in hdict.items()]))
     if date is None:  # 此时预测上个交易日净值
 
         yesterday_str = datekey
@@ -364,9 +366,9 @@ def get_qdii_tt(code, hdict, date=None, positions=True):
 
 
 @error_catcher
-def get_qdii_t(code, ttdict, tdict, percent=False):
+def get_qdii_t(code, ttdict, tdict, positions=True, percent=False):
     # predict realtime netvalue for d day, only possible for oil related lof
-    nettt = get_qdii_tt(code, ttdict)
+    nettt = get_qdii_tt(code, ttdict, positions=positions)
     t = 0
     n = 0
     today_str = dt.datetime.now(tz=tz_bj).strftime("%Y%m%d")
