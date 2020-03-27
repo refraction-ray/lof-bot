@@ -15,4 +15,12 @@ if __name__ == "__main__":
     main()
     ## extras
     # xa.set_backend(backend="csv", path="./data", precached="20200301")
-    # render_github("SZ162719", "SH513030", date="2020-03-09", refresh=True)
+    render_github(
+        "SH501018",
+        "SZ160216",
+        "SZ162411",
+        "SZ160723",
+        "SZ161129",
+        "SZ162719",
+        refresh=True,
+    )

@@ -66,7 +66,8 @@ def render_github(
                 version = version_line.split(":")[1]
             else:
                 version = "-0.0.1"
-            if version == nversion:
+            # if version == nversion:
+            if True:
                 with open(
                     os.path.join(
                         os.path.dirname(
