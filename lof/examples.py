@@ -21,8 +21,8 @@ def pred_ntf_oil(code, **kws):
     print(code, dprice, ddprice)
     r = xa.get_rt(code)
     cprice = r["current"]
-    higher = kws.get("h", 1.04)
-    lower = kws.get("l", 0.97)
+    higher = kws.get("h", 1.05)
+    lower = kws.get("l", 0.96)
     _type = kws.get("ntf_type", "pb")
     if cprice / dprice > higher or cprice / dprice < lower:
         notify(
