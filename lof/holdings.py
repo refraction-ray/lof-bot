@@ -218,6 +218,9 @@ infos = {
     "1088675": Info(
         "标普高盛商品指数 (SPGSCI)", "indices/s-p-goldman-sachs-commodity-index", "USD"
     ),
+    "962700": Info(
+        "标普500指数科技板块 (SPLRCT)", "indices/s-p-500-information-technology", "USD"
+    ),
 }
 
 
@@ -381,6 +384,9 @@ holdings_164906_19s4 = {"CSIH11136": 95}  # 954018
 ## 国泰纳斯达克
 holdings_513100_19s4 = {"20": 99}
 
+## 易方达标普科技
+holdings_161128_19s4 = {"962700": 95}
+
 # couldn't find 互联网50 for 中概互联 at investing.com
 # 易方达中概
 holdings_513050_19s4 = {
@@ -428,6 +434,8 @@ holdings["161130"] = holdings_161130_19s4
 holdings["161130rt"] = {"8874": 94}
 holdings["513100"] = holdings_513100_19s4
 holdings["513100rt"] = {"8874": 99}
+holdings["161128"] = holdings_161128_19s4
+holdings["161128rt"] = {"8839": 95}  # 非常粗糙的代替
 
 holdings["513880"] = holdings_513880_19s4
 holdings["513520"] = holdings_513880_19s4
