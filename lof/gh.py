@@ -3,8 +3,14 @@ import xalpha as xa
 import re
 from jinja2 import Environment, PackageLoader
 
-from .predict import get_qdii_tt, get_qdii_t, get_newest_netvalue, get_nonqdii_t
-from .holdings import holdings
+from .predict import (
+    get_qdii_tt,
+    get_qdii_t,
+    get_newest_netvalue,
+    get_nonqdii_t,
+    position_predict,
+)
+from .holdings import holdings, floatings
 from .exceptions import NonAccurate
 from .utils import next_onday, last_onday, tz_bj
 
@@ -35,6 +41,10 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         vdtstr = otext.split(";")[1][:10]  # -
         if not est_holdings:
             est_holdings = holdings[code[2:]]  ## 动态仓位调整切入点
+        if code in floatings:
+            is_floating = True
+        else:
+            is_floating = False
         today = now.strftime("%Y-%m-%d")
         if v == "value1":
             if not rt_holdings and not holdings.get(code[2:] + "rt"):
@@ -70,10 +80,25 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         elif v == "value2":
             try:
                 if last_onday(now).strftime("%Y-%m-%d") == vdtstr:
-                    ntext = str(round(get_qdii_tt(code, est_holdings), 3))
+                    ntext = str(
+                        round(
+                            get_qdii_tt(
+                                code, est_holdings, positions=is_floating
+                            ),
+                            3,
+                        )
+                    )
                 else:
                     ntext = str(
-                        round(get_qdii_tt(code, est_holdings, date=vdtstr), 3)
+                        round(
+                            get_qdii_tt(
+                                code,
+                                est_holdings,
+                                date=vdtstr,
+                                positions=is_floating,
+                            ),
+                            3,
+                        )
                     )
             except NonAccurate as e:
                 print(e.reason)
@@ -117,6 +142,22 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
                 print(e.reason)
                 ntext = otext
 
+        elif v == "position":
+            try:
+                if is_floating:
+                    v = position_predict(code, date=vdtstr, hdict=est_holdings)
+                    ntext = str(round(v, 2))
+                else:
+                    ntext = str(
+                        round(sum([v for _, v in est_holdings.items()]), 2)
+                    )
+            except NonAccurate as e:
+                print(e.reason)
+                ntext = otext
+
+        elif v == "footnote":
+            ntext = otext
+
         elif v == "4c":
             ntext = f"""<!--update:{next_onday(dtobj).strftime("%Y-%m-%d-%H-%M")};{next_onday(dtobj).strftime("%Y-%m-%d")}-4c--><!--end-->
 <tr>
@@ -126,6 +167,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         "%Y-%m-%d-%H-%M"
     )};{dtobj.strftime("%Y-%m-%d")}-value2-->&nbsp;<!--end--></td>
 <td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(days=1, hours=12)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
+<td style='text-align:center;' > <!--update:{(dtobj + dt.timedelta(days=1, hours=12)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-position--><!--end--></td>
 </tr>
             """
         elif v == "3c":

@@ -442,3 +442,14 @@ holdings["513050"] = holdings_513050_19s4
 no_trading_days = {"JPY": ["2020-03-20"]}
 
 no_trading_days["100JPY"] = no_trading_days["JPY"]
+
+floatings = [
+    "SH501018",
+    "SZ160216",
+    "SZ162411",
+    "SZ160723",
+    "SZ161129",
+    "SZ162719",
+    "SZ165513",
+    "SZ161815",
+]

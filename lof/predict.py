@@ -162,8 +162,8 @@ def _smooth_pos(r, e, o):
     elif pos < 0.5:
         pos = pos ** 0.6
 
-    if abs(r) < 1:
-        pos = (pos + (3 - 3 * abs(r)) * o) / (4 - 3 * abs(r))
+    if abs(r) < 0.6:
+        pos = (pos + (3 - 5 * abs(r)) * o) / (4 - 5 * abs(r))
 
     return pos
 
@@ -265,18 +265,76 @@ def error_catcher(f):
     return wrapper
 
 
-@error_catcher
-def get_qdii_tt(code, hdict, date=None):
-    # predict d-1 netvalue of qdii funds
+position_cache = {}
 
-    if date is None:  # 此时预测上个交易日净值
+
+@error_catcher
+def position_predict(code, hdict, date, **kws):
+    date = date.replace("/", "").replace("-", "")
+    key = code + date
+    if key in position_cache:
+        return position_cache[key]
+    fdict = scale_dict(hdict.copy(), aim=100)
+    l = kws.get("window", 4)
+    q = kws.get("decay", 0.8)
+    s = kws.get("smooth", _smooth_pos)
+    d = dt.datetime.strptime(date, "%Y%m%d")
+    posl = []
+    for _ in range(l + 1):
+        d = last_onday(d)
+    for _ in range(l):
+        d = next_onday(d)
+        # print(d)
+        pred = evaluate_fluctuation(
+            fdict,
+            d.strftime("%Y-%m-%d"),
+            _check=(d - dt.timedelta(days=1)).strftime("%Y-%m-%d"),
+        )
+        real = evaluate_fluctuation(
+            {code: 100},
+            d.strftime("%Y-%m-%d"),
+            _check=(d - dt.timedelta(days=1)).strftime("%Y-%m-%d"),
+        )
+        if posl:
+            old = posl[-1]
+        else:
+            old = sum([v for _, v in hdict.items()]) / 100
+        posl.append(s(real, pred, old))
+    # print(posl)
+    current_pos = sum([q ** i * posl[i] for i in range(l)]) / sum(
+        [q ** i for i in range(l)]
+    )
+    position_cache[key] = current_pos
+    return current_pos
+
+
+tt_cache = {}
+
+
+@error_catcher
+def get_qdii_tt(code, hdict, date=None, positions=True):
+    # predict d-1 netvalue of qdii funds
+    if date is None:
         today = (
             dt.datetime.now(tz=tz_bj)
             .replace(tzinfo=None)
             .replace(hour=0, minute=0, second=0, microsecond=0)
         )
         yesterday = last_onday(today)
-        yesterday_str = yesterday.strftime("%Y%m%d")
+        datekey = yesterday.strftime("%Y%m%d")
+    else:
+        datekey = date.replace("/", "").replace("-", "")
+
+    key = code + datekey
+    if key in tt_cache:
+        return tt_cache[key]
+    if positions:
+
+        current_pos = position_predict(code, hdict, datekey)
+        hdict = scale_dict(hdict.copy(), aim=current_pos * 100)
+    if date is None:  # 此时预测上个交易日净值
+
+        yesterday_str = datekey
         last_value, last_date = get_newest_netvalue("F" + code[2:])
         last_date_obj = dt.datetime.strptime(last_date, "%Y-%m-%d")
         if last_date_obj < last_onday(yesterday):  # 前天净值数据还没更新
@@ -292,7 +350,7 @@ def get_qdii_tt(code, hdict, date=None):
             )
             return last_value
     else:
-        yesterday_str = date.replace("-", "").replace("/", "")
+        yesterday_str = datekey
         fund_price = xa.get_daily("F" + code[2:])
         fund_last = fund_price[fund_price["date"] < date].iloc[-1]
         # 注意实时更新应用 date=None 传入，否则此处无法保证此数据是前天的而不是大前天的
@@ -301,7 +359,7 @@ def get_qdii_tt(code, hdict, date=None):
     net = last_value * (
         1 + evaluate_fluctuation(hdict, yesterday_str, _check=last_date) / 100
     )
-
+    tt_cache[key] = net
     return net
 
 

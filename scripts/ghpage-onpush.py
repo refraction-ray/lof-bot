@@ -14,5 +14,5 @@ from ghpage import main
 if __name__ == "__main__":
     main()
     ## extras
-    # xa.set_backend(backend="csv", path="./data",  precached="20200301")
-    # render_github("SZ161815", refresh=True)
+    # xa.set_backend(backend="csv", path="./data", precached="20200301")
+    # render_github("SZ162719", "SH513030", date="2020-03-09", refresh=True)

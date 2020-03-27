@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<!--version:2020.03.13.01:-->
+<!--version:2020.03.26.01:-->
 <head>
 <meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
 <title></title><link href='https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic&subset=latin-ext' rel='stylesheet' type='text/css' /><link href='https://fonts.googleapis.com/css?family=Lato:900,300&subset=latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}#write, body { height: auto; }
@@ -657,13 +657,18 @@ a {
 <th style='text-align:center;' >准确预估 {% if cols == "3crt" %}（T） {% else %} (T+1) {% endif %}
 </th>
 <th style='text-align:center;' >实际净值 {% if cols == "3crt" %}（T+1） {% else %} (T+2) {% endif %}
-</th></tr></thead><tbody>
+</th>
+{% if cols == "4c"%}
+<th style='text-align:center;' >预估仓位 </th>
+{% endif %}
+</tr></thead><tbody>
 
 <!--update:{{ date }}-08-00;{{ date }}-{{ cols }}--><!--end-->
 
 
 <tr>
 {% if cols == "4c" %}
+<td style='text-align:center;' >&nbsp;</td>
 <td style='text-align:center;' >&nbsp;</td>
 {% endif %}
 <td style='text-align:center;' >&nbsp;</td>
@@ -672,6 +677,9 @@ a {
 </tr>
 </tbody>
 </table>
-</figure><p>&nbsp;</p></div>
+</figure>
+    <p>&nbsp;</p>
+<!--update:{{ date }}-08-00;{{date}}-footnote--><!--end-->
+</div>
 </body>
 </html>
