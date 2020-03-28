@@ -169,7 +169,7 @@ def replace_text(otext, code=None, est_holdings=None, rt_holdings=None):
         "%Y-%m-%d-%H-%M"
     )};{dtobj.strftime("%Y-%m-%d")}-value2-->&nbsp;<!--end--></td>
 <td style='text-align:center;' ><!--update:{(dtobj + dt.timedelta(days=1, hours=12)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-value3-->&nbsp;<!--end--></td>
-<td style='text-align:center;' > <!--update:{(dtobj + dt.timedelta(days=1, hours=12)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-position--><!--end--></td>
+<td style='text-align:center;' > <!--update:{(dtobj+ dt.timedelta(hours=1)).strftime("%Y-%m-%d-%H-%M")};{dtobj.strftime("%Y-%m-%d")}-position--><!--end--></td>
 </tr>
             """
         elif v == "3c":

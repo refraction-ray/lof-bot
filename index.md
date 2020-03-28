@@ -63,5 +63,6 @@ More funds are coming soon.
 
 * [不同 QDII 基金净值可预测性](https://github.com/refraction-ray/lof-bot/blob/master/studies/qdii_lof_prediction.ipynb)
 * [不同 QDII 基金对基准的追踪情况和购买建议分析](https://github.com/refraction-ray/lof-bot/blob/master/studies/compwithbenchmark.ipynb)
+* [末日QDII拯救计划：主流 QDII 额度耗尽时的替代品分析](https://github.com/refraction-ray/lof-bot/blob/master/studies/alternatives.ipynb)
 
 Stay tuned for more.

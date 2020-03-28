@@ -221,6 +221,16 @@ infos = {
     "962700": Info(
         "标普500指数科技板块 (SPLRCT)", "indices/s-p-500-information-technology", "USD"
     ),
+    "941591": Info(
+        "KraneShares CSI China Internet ETF (KWEB)",
+        "etfs/kraneshares-csi-china-internet",
+        "USD",
+    ),
+    "45481": Info(
+        "iShares PHLX Semiconductor ETF (SOXX)",
+        "etfs/ishares-phlx-sox-semiconductor",
+        "USD",
+    ),
 }
 
 
@@ -401,6 +411,51 @@ holdings_513050_19s4 = {
     "PDD": 2.33,
     "WUBA": 0.99,
 }
+
+# 鹏华港美互联股票人民币, 19半年报持仓全披露
+holdings_160644_19hy = {
+    "HK00700": 9.98,
+    "BABA": 9.8,
+    "FB": 9.79,
+    "AMZN": 9.45,
+    "TAL": 4.97,
+    "ERIC": 4.85,
+    "WMT": 3.81,
+    "HK00763": 3.76,
+    "HK02382": 3.51,
+    "PDD": 2.79,
+    "AMD": 2.79,
+    "HK01055": 2.76,
+    "HK01810": 2.54,
+    "YY": 2.29,
+    "GOOGL": 2.15,
+    "HK06030": 1.77,
+    "HK06066": 1.69,
+    "BIDU": 1.66,
+    "HK01336": 1.65,
+    "HK03888": 1.47,
+    "NTES": 1.45,
+    "HK03899": 1.31,
+    "HK01986": 0.73,
+    "NEM": 0.55,
+    "HK02168": 0.03,
+    "941591": 2.74,
+    "45481": 1.63,
+}
+## 持仓变化连续性小，变化剧烈，给预测提出了很高的要求
+holdings_160644_19s4 = {
+    "HK00700": 9.78,
+    "BABA": 9.68,
+    "HK03690": 9,
+    "HK03888": 6.74,
+    "GOOGL": 5.13,
+    "MSFT": 5.11,
+    "QCOM": 4.95,
+    "FB": 4.47,
+    "NVDA": 4.29,
+    "HK03808": 3.52,
+}
+holdings_160644_19s4 = scale_dict(holdings_160644_19s4, aim=87.34)
 
 # 建信富时100
 holdings_539003_19s4 = {"27": 95}  # 跟踪非常不准
