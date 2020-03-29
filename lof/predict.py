@@ -6,13 +6,16 @@ import numpy as np
 from bs4 import BeautifulSoup
 from functools import wraps
 from collections import deque
+from functools import lru_cache
 
 from .holdings import infos, future_now, no_trading_days
 from .utils import month_ago, last_onday, tz_bj, scale_dict, next_onday
 from .exceptions import DateMismatch, NonAccurate
 
 
+@lru_cache(maxsize=256)
 def get_currency(code):
+    # 强制需要自带 cache，否则在回测 table 是，info 里没有的代码将很灾难。。。
     # only works for HKD JPY USD GBP CNY EUR, not very general when data source gets diverse more
     if code in infos:
         return infos[code].currency

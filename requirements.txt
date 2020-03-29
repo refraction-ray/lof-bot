@@ -1,6 +1,6 @@
 pandas
 pushbullet.py==0.11.0
-xalpha==0.7.0
+xalpha==0.7.1
 numpy
 requests
 beautifulsoup4

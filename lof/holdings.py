@@ -231,6 +231,60 @@ infos = {
         "etfs/ishares-phlx-sox-semiconductor",
         "USD",
     ),
+    "44703": Info(
+        "iShares MSCI Global Gold Miners ETF (RING)",
+        "etfs/ishares-msci-global-gold-miners-be",
+        "USD",
+    ),
+    "40681": Info(
+        "VanEck Vectors Gold Miners ETF (GDX)",
+        "etfs/market-vectors-gold-miners",
+        "USD",
+    ),
+    "BB-GLDM:US": Info("SPDR Gold MiniShares Trust", "GLDM:US", "USD"),
+    "1088680": Info(
+        "SPDR Gold MiniShares (GLDM)", "etfs/spdr-gold-minishares", "USD"
+    ),
+    "38181": Info(
+        "iShares Gold Trust (IAU)", "etfs/ishares-comex-gold-trust", "USD"
+    ),
+    "959226": Info(
+        "Sprott Gold Miners ETF (SGDM)", "etfs/alps-sprott-gold-miners", "USD"
+    ),
+    "BB-GUIGLGI:LX": Info("Investec GS Global Gold", "BB-GUIGLGI:LX", "USD"),
+    "956212": Info(
+        "Sprott Junior Gold Miners ETF (SGDJ)",
+        "etfs/alps-sprott-junior-gold-miners",
+        "USD",
+    ),
+    "40682": Info(
+        "VanEck Vectors Junior Gold Miners ETF (GDXJ)",
+        "etfs/market-vectors-junior-gold-miners",
+        "USD",
+    ),
+    "941457": Info(
+        "Direxion Daily Junior Gold Miners Index Bull 3X Shares (JNUG)",
+        "etfs/direxion-daily-jr-gld-mnrs-bull-3x",
+        "USD",
+    ),
+    "BB-JBGOEX:SW": Info(
+        "Swisscanto ETF Precious Metal Physical Gold", "BB-JBGOEX:SW", "EUR"
+    ),
+    "BB-AUCHAH:SW": Info("UBS ETF CH-Gold CHF hedged", "BB-AUCHAN:SW", "CHF"),
+    "BB-ZGLD:SW": Info("ZKB Gold ETF", "ZGLD:SW", "CHF"),
+    "BB-SGOL:US": Info(
+        "Aberdeen Standard Physical Gold Shares ETF", "BB-SGOL:US", "USD"
+    ),
+    "BB-CSGOLD:SW": Info("iShares Gold ETF CH", "BB-CSGOLD:SW", "USD"),
+    "YH-JBGOEA.SW": Info(
+        "Swisscanto ETF Precious Metal Physical Gold EUR A (JBGOEA.SW)",
+        "YH-JBGOEA.SW",
+        "EUR",
+    ),  # 数据严重缺失，慎用！
+    "BB-JBGOUA:SW": Info(
+        "Swisscanto ETF Precious Metal Physical Gold", "BB-JBGOUA:SW", "USD"
+    ),
+    "YH-PHYS": Info("Sprott Physical Gold Trust (PHYS)", "PHYS", "USD"),
 }
 
 
@@ -463,6 +517,41 @@ holdings_539003_19s4 = {"27": 95}  # 跟踪非常不准
 # 华宝中小
 holdings_501021_19s4 = {".SPHCMSHP": 92}
 
+# 易基黄金
+holdings_161116_19s4 = {
+    "44703": 18.25,
+    "40681": 16.83,
+    "9227": 11.22,
+    "1088680": 15.49,
+    "38181": 11.21,
+    "959226": 7.66,
+    "BB-GUIGLGI:LX": 4.01,
+    "956212": 3.49,
+    "40682": 3.19,
+    "941457": 1.52,
+}
+
+# 嘉实黄金
+holdings_160719_19s4 = {
+    "9227": 18.05,
+    "BB-JBGOEX:SW": 16.11,
+    "BB-AUCHAH:SW": 15.62,
+    "BB-ZGLD:SW": 14.61,
+    "38181": 14.53,
+    "BB-SGOL:US": 9.03,
+    "BB-CSGOLD:SW": 7.05,
+}
+
+# 汇添富黄金
+holdings_164701_19s4 = {
+    "BB-AUCHAH:SW": 16.47,
+    "BB-SGOL:US": 15.85,
+    "38181": 15.72,
+    "BB-JBGOUA:SW": 15.65,
+    "YH-PHYS": 14.36,
+    "9227": 14.15,
+}
+
 holdings["oil_rt"] = {
     "commodities/brent-oil": 40 * 0.9,
     "commodities/crude-oil": 60 * 0.9,
@@ -478,6 +567,10 @@ holdings["162719"] = holdings_162719_19s4
 holdings["163208"] = holdings_163208_19s4
 holdings["165513"] = holdings_165513_19s4
 holdings["161815"] = holdings_161815_bc
+
+holdings["161116"] = holdings_161116_19s4
+holdings["160719"] = holdings_160719_19s4
+holdings["164701"] = holdings_164701_19s4
 
 holdings["513030"] = holdings_513030_19s4
 holdings["513030rt"] = {"8826": 95}
@@ -517,4 +610,5 @@ floatings = [
     # "SZ161815", # 不适合浮动仓位
     "SZ163208",  # 诺安浮动仓位效果很好
     "SZ160416",
+    "SZ161116",  # experimental 似乎浮动仓位效果好一点
 ]
