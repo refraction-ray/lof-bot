@@ -12,8 +12,8 @@ def main(*argv):
     if not is_cn_trading():
         print("非交易时间")
         return
-    for code in ["SH501018", "SZ160216", "SZ162411", "SZ161129", "SZ160723"]:
-        pred_ntf_oil(code, token=argv[1])
+    codes = ["SH501018", "SZ160216", "SZ162411", "SZ161129", "SZ160723"]
+    pred_ntf_oil(*codes, token=argv[1])
 
 
 if __name__ == "__main__":

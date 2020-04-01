@@ -10,32 +10,35 @@ from .exceptions import NonAccurate
 from .gh import render_template, render
 
 
-def pred_ntf_oil(code, **kws):
-    daily_holdings = kws.get("daily_holdings", holdings[code[2:]])
-    rt_holdings = kws.get("rt_holdings", holdings["oil_rt"])
-    try:
-        ddprice, dprice = get_qdii_t(code, daily_holdings, rt_holdings)
-    except NonAccurate as e:
-        print(e.reason)
-        return
-    print(code, dprice, ddprice)
-    r = xa.get_rt(code)
-    cprice = r["current"]
+def pred_ntf_oil(*codes, **kws):
     higher = kws.get("h", 1.05)
     lower = kws.get("l", 0.96)
+    title = kws.get("title", "基金溢价提示")
     _type = kws.get("ntf_type", "pb")
-    if cprice / dprice > higher or cprice / dprice < lower:
-        notify(
-            r["name"],
-            "溢价率已达到 %s%%。T-1 日净值预估 %s, T 日净值实时预估 %s，实时价格 %s。"
-            % (
+    rstr = ""
+    for code in codes:
+        daily_holdings = kws.get("daily_holdings", holdings[code[2:]])
+        rt_holdings = kws.get("rt_holdings", holdings["oil_rt"])
+        try:
+            ddprice, dprice = get_qdii_t(code, daily_holdings, rt_holdings)
+        except NonAccurate as e:
+            print(e.reason)
+            continue
+        print(code, dprice, ddprice)
+        r = xa.get_rt(code)
+        cprice = r["current"]
+
+        if cprice / dprice > higher or cprice / dprice < lower:
+            rstr += "溢价率已达到 %s%%。T-1 日净值预估 %s, T 日净值实时预估 %s，实时价格 %s。\n" % (
                 round((cprice / dprice - 1) * 100, 1),
                 round(ddprice, 3),
                 round(dprice, 3),
                 round(cprice, 3),
-            ),
-            token=kws.get("token"),
-            _type=_type,
+            )
+
+    if rstr:
+        notify(
+            title, rstr, token=kws.get("token"), _type=_type,
         )
 
 
