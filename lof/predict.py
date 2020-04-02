@@ -304,7 +304,7 @@ def position_predict(code, hdict, date, **kws):
             old = sum([v for _, v in hdict.items()]) / 100
         posl.append(s(real, pred, old))
     # print(posl)
-    current_pos = sum([q ** i * posl[i] for i in range(l)]) / sum(
+    current_pos = sum([q ** i * posl[l-i-1] for i in range(l)]) / sum(
         [q ** i for i in range(l)]
     )
     position_cache[key] = current_pos
