@@ -429,7 +429,7 @@ holdings_161815_bc = {"1088675": 70}
 # 华安德国
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001211374413094_1.pdf
 # http://pdf.dfcfw.com/pdf/H2_AN202001201374397836_1.pdf 华安联接现在有个超级大户。。。
-holdings_513030_19s4 = {"172": 94.81}
+holdings_513030_19s4 = {"172": 95}
 
 # 博时标普500
 # reference: http://pdf.dfcfw.com/pdf/H2_AN202001171374274630_1.pdf
