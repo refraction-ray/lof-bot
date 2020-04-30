@@ -12,7 +12,8 @@ setuptools.setup(
     install_requires=[
         "lxml",
         "pandas",
-        "jinja2" "numpy",
+        "jinja2",
+        "numpy",
         "requests",
         "xalpha==0.5.0",
         "pushbullet.py==0.11.0",
